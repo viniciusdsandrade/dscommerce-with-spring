@@ -21,16 +21,16 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_name", nullable = false)
+    @Column(name = "product_name")
     private String name;
 
     @Column(name = "product_description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "product_price", nullable = false)
+    @Column(name = "product_price")
     private Double price;
 
-    @Column(name = "product_img_url", nullable = false)
+    @Column(name = "product_img_url")
     private String imgUrl;
 
     @ManyToMany
@@ -43,40 +43,65 @@ public class Product {
     @OneToMany(mappedBy = "id.product")
     private Set<OrderItem> items = new HashSet<>();
 
+    public Product(Long id,
+                   String name,
+                   String description,
+                   Double price,
+                   String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imgUrl = imageUrl;
+    }
+
     public List<Order> getOrders() {
         return items.stream().map(OrderItem::getOrder).toList();
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
         Product product = (Product) o;
 
-        return Objects.equals(id, product.id) &&
-                Objects.equals(name, product.name) &&
-                Objects.equals(price, product.price) &&
-                Objects.equals(imgUrl, product.imgUrl);
+        return Objects.equals(this.id, product.id) &&
+                Objects.equals(this.name, product.name) &&
+                Objects.equals(this.price, product.price) &&
+                Objects.equals(this.imgUrl, product.imgUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, imgUrl);
+        final int prime = 31;
+        int hash = 1;
+
+        hash *= prime + ((this.id == null) ? 0 : this.id.hashCode());
+        hash *= prime + ((this.imgUrl == null) ? 0 : this.imgUrl.hashCode());
+        hash *= prime + ((this.name == null) ? 0 : this.name.hashCode());
+        hash *= prime + ((this.price == null) ? 0 : this.price.hashCode());
+
+        if (hash < 0)
+            hash *= -1;
+
+        return hash;
     }
 
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + id +
-                ",\n  \"name\": \"" + name + '\"' +
-                ",\n  \"description\": \"" + description + '\"' +
-                ",\n  \"price\": " + price +
-                ",\n  \"imgUrl\": \"" + imgUrl + '\"' +
+                "  \"id\": " + this.id +
+                ",\n  \"name\": \"" + this.name + '\"' +
+                ",\n  \"description\": \"" + this.description + '\"' +
+                ",\n  \"price\": " + this.price +
+                ",\n  \"imgUrl\": \"" + this.imgUrl + '\"' +
                 "\n}";
     }
 
+    // Construtor de cópia.
     public Product(Product product) {
         this.id = product.id;
         this.name = product.name;
@@ -88,5 +113,4 @@ public class Product {
         this.categories = new HashSet<>(product.categories);
         this.items = new HashSet<>(product.items);
     }
-
 }
