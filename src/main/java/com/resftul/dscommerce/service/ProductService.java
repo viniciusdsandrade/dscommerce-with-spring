@@ -1,6 +1,7 @@
 package com.resftul.dscommerce.service;
 
 import com.resftul.dscommerce.dto.ProductDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,12 @@ public interface ProductService {
     ProductDTO update(Long id, ProductDTO productDTO);
 
     @Transactional(readOnly = true)
-    List<ProductDTO> findAll(Pageable pageable);
+    Page<ProductDTO> findAll(String name,Pageable pageable);
 
     void delete(Long id);
 
     ProductDTO update(ProductDTO productDTO);
+
+    @Transactional(readOnly = true)
+    Page<ProductDTO> findByName(String name, Pageable pageable);
 }

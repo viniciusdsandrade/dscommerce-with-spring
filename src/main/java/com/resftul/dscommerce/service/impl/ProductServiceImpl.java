@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -54,12 +52,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductDTO> findAll(Pageable pageable) {
+    public Page<ProductDTO> findByName(String name, Pageable pageable) {
 
-        Page<ProductDTO> productPage = productRepository.findAll(pageable)
+        return productRepository.searchByName(name, pageable)
                 .map(ProductMapper::mapToProductDTO);
+    }
 
-        return productPage.getContent();
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> findAll(String name, Pageable pageable) {
+        Page<Product> productPage = productRepository.searchByName(name, pageable);
+        return productPage.map(ProductMapper::mapToProductDTO);
     }
 
     @Override

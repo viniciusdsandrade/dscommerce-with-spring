@@ -3,13 +3,13 @@ package com.resftul.dscommerce.controller;
 import com.resftul.dscommerce.dto.ProductDTO;
 import com.resftul.dscommerce.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -36,8 +36,21 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ProductDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(productService.findAll(pageable));
+    public ResponseEntity<Page<ProductDTO>> findAll(
+            @RequestParam(value = "name", defaultValue = "", required = false) String name,
+            Pageable pageable) {
+
+        Page<ProductDTO> productPage = productService.findAll(name, pageable);
+        return ResponseEntity.ok(productPage);
+    }
+
+    @GetMapping(value = "/name/{name}")
+    public ResponseEntity<Page<ProductDTO>> findByName(
+            @PathVariable String name,
+            Pageable pageable
+    ) {
+        Page<ProductDTO> productPage = productService.findByName(name, pageable);
+        return ResponseEntity.ok(productPage);
     }
 
     @GetMapping(value = "/{id}")
