@@ -33,23 +33,23 @@ public class Payment {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
-        Payment payment = (Payment) o;
+        Payment that = (Payment) o;
 
-        return Objects.equals(id, payment.id) &&
-                Objects.equals(moment, payment.moment);
+        return Objects.equals(this.id, that.id) &&
+                Objects.equals(this.moment, that.moment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, moment);
+        return Objects.hash(this.id, this.moment);
     }
 
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + id +
-                ",\n  \"moment\": \"" + moment + "\"" +
-                ",\n  \"orderId\": " + (order != null ? order.getId() : null) +
+                "  \"id\": " + this.id +
+                ",\n  \"moment\": \"" + this.moment + "\"" +
+                ",\n  \"orderId\": " + (this.order != null ? this.order.getId() : null) +
                 "\n}";
     }
 

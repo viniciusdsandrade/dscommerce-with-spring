@@ -88,36 +88,46 @@ CREATE TABLE IF NOT EXISTS OrderStatus
     PRIMARY KEY (id)
 );
 
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User1', 'user1@example.com', 'password1', '1990-01-01', '1234567890', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User2', 'user2@example.com', 'password2', '1991-02-02', '2345678901', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User3', 'user3@example.com', 'password3', '1992-03-03', '3456789012', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User4', 'user4@example.com', 'password4', '1993-04-04', '4567890123', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User5', 'user5@example.com', 'password5', '1994-05-05', '5678901234', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User6', 'user6@example.com', 'password6', '1995-06-06', '6789012345', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User7', 'user7@example.com', 'password7', '1996-07-07', '7890123456', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User8', 'user8@example.com', 'password8', '1997-08-08', '8901234567', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User9', 'user9@example.com', 'password9', '1998-09-09', '9012345678', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User10', 'user10@example.com', 'password10', '1999-10-10', '0123456789', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User11', 'user11@example.com', 'password11', '2000-11-11', '1234567890', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User12', 'user12@example.com', 'password12', '2001-12-12', '2345678901', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User13', 'user13@example.com', 'password13', '2002-01-13', '3456789012', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User14', 'user14@example.com', 'password14', '2003-02-14', '4567890123', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User15', 'user15@example.com', 'password15', '2004-03-15', '5678901234', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User16', 'user16@example.com', 'password16', '2005-04-16', '6789012345', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User17', 'user17@example.com', 'password17', '2006-05-17', '7890123456', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User18', 'user18@example.com', 'password18', '2007-06-18', '8901234567', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User19', 'user19@example.com', 'password19', '2008-07-19', '9012345678', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User20', 'user20@example.com', 'password20', '2009-08-20', '0123456789', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User21', 'user21@example.com', 'password21', '2010-09-21', '1234567890', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User22', 'user22@example.com', 'password22', '2011-10-22', '2345678901', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User23', 'user23@example.com', 'password23', '2012-11-23', '3456789012', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User24', 'user24@example.com', 'password24', '2013-12-24', '4567890123', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User25', 'user25@example.com', 'password25', '2014-01-25', '5678901234', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User26', 'user26@example.com', 'password26', '2015-02-26', '6789012345', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User27', 'user27@example.com', 'password27', '2016-03-27', '7890123456', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User28', 'user28@example.com', 'password28', '2017-04-28', '8901234567', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User29', 'user29@example.com', 'password29', '2018-05-29', '9012345678', 'ROLE_USER');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone, user_roles) VALUES ('User30', 'user30@example.com', 'password30', '2019-06-30', '0123456789', 'ROLE_USER');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('Vinícius', 'vinicius_andrade2010@hotmail.com', 'MinhaSenhaSecreta','2001-12-06', '(19) 974133884)');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('Vinícius', 'viniciusdsandrade0662@gmail.com', 'MinhaSenhaSecreta','2001-12-06', '(19) 974133884)');
+INSERT INTO tb_role(authority) VALUES ('ROLE_OPERATOR');
+INSERT INTO tb_role(authority) VALUES ('ROLE_ADMIN');
+
+INSERT INTO tb_user_roles(user_id, role_id) VALUES (1, 1);
+INSERT INTO tb_user_roles(user_id, role_id) VALUES (2, 1);
+INSERT INTO tb_user_roles(user_id, role_id) VALUES (2, 2);
+
+
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User1', 'user1@example.com', 'password1', '1990-01-01', '1234567890');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User2', 'user2@example.com', 'password2', '1991-02-02', '2345678901');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User3', 'user3@example.com', 'password3', '1992-03-03', '3456789012');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User4', 'user4@example.com', 'password4', '1993-04-04', '4567890123');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User5', 'user5@example.com', 'password5', '1994-05-05', '5678901234');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User6', 'user6@example.com', 'password6', '1995-06-06', '6789012345');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User7', 'user7@example.com', 'password7', '1996-07-07', '7890123456');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User8', 'user8@example.com', 'password8', '1997-08-08', '8901234567');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User9', 'user9@example.com', 'password9', '1998-09-09', '9012345678');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User10', 'user10@example.com', 'password10', '1999-10-10', '0123456789');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User11', 'user11@example.com', 'password11', '2000-11-11', '1234567890');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User12', 'user12@example.com', 'password12', '2001-12-12', '2345678901');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User13', 'user13@example.com', 'password13', '2002-01-13', '3456789012');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User14', 'user14@example.com', 'password14', '2003-02-14', '4567890123');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User15', 'user15@example.com', 'password15', '2004-03-15', '5678901234');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User16', 'user16@example.com', 'password16', '2005-04-16', '6789012345');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User17', 'user17@example.com', 'password17', '2006-05-17', '7890123456');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User18', 'user18@example.com', 'password18', '2007-06-18', '8901234567');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User19', 'user19@example.com', 'password19', '2008-07-19', '9012345678');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User20', 'user20@example.com', 'password20', '2009-08-20', '0123456789');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User21', 'user21@example.com', 'password21', '2010-09-21', '1234567890');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User22', 'user22@example.com', 'password22', '2011-10-22', '2345678901');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User23', 'user23@example.com', 'password23', '2012-11-23', '3456789012');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User24', 'user24@example.com', 'password24', '2013-12-24', '4567890123');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User25', 'user25@example.com', 'password25', '2014-01-25', '5678901234');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User26', 'user26@example.com', 'password26', '2015-02-26', '6789012345');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User27', 'user27@example.com', 'password27', '2016-03-27', '7890123456');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User28', 'user28@example.com', 'password28', '2017-04-28', '8901234567');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User29', 'user29@example.com', 'password29', '2018-05-29', '9012345678');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User30', 'user30@example.com', 'password30', '2019-06-30', '0123456789');
 
 INSERT INTO tb_product (product_name, product_description, product_price, product_img_url) VALUES ('Laptop', 'Powerful laptop with high performance', 999.99, 'laptop.jpg');
 INSERT INTO tb_product (product_name, product_description, product_price, product_img_url) VALUES ('Smartphone', 'Latest smartphone with advanced features', 599.99, 'smartphone.jpg');

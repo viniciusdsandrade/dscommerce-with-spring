@@ -6,9 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -39,12 +37,29 @@ public class User {
     @Column(name = "user_password", nullable = false)
     private String password;
 
-    @Column(name = "user_roles", nullable = false)
-    private String roles;
-
     @OneToMany(mappedBy = "client")
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "tb_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    public boolean hasRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getAuthority().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -53,30 +68,30 @@ public class User {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        User that = (User) o;
 
-        return Objects.equals(id, user.id) &&
-                Objects.equals(email, user.email);
+        return Objects.equals(this.id, that.id) &&
+                Objects.equals(this.email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email);
+        return Objects.hash(this.id, this.email);
     }
 
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + id +
-                ",\n  \"name\": \"" + name + '\"' +
-                ",\n  \"email\": \"" + email + '\"' +
-                ",\n  \"phone\": \"" + phone + '\"' +
-                ",\n  \"birthDate\": \"" + birthDate + '\"' +
-                ",\n  \"password\": \"" + password + '\"' +
-                ",\n  \"roles\": \"" + roles + '\"' +
+                "  \"id\": " + this.id +
+                ",\n  \"name\": \"" + this.name + '\"' +
+                ",\n  \"email\": \"" + this.email + '\"' +
+                ",\n  \"phone\": \"" + this.phone + '\"' +
+                ",\n  \"birthDate\": \"" + this.birthDate + '\"' +
+                ",\n  \"password\": \"" + this.password + '\"' +
+                ",\n  \"roles\": \"" + this.roles + '\"' +
                 "\n}";
     }
-    
+
     public User(User user) {
         this.id = user.id;
         this.name = user.name;

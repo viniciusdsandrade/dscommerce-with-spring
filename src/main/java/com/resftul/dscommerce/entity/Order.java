@@ -47,23 +47,24 @@ public class Order {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
+        Order that = (Order) o;
+
+        return Objects.equals(this.id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.id);
     }
 
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + id +
-                ",\n  \"moment\": \"" + moment + "\"" +
-                ",\n  \"client\": " + (client != null ? client.getId() : null) +
-                ",\n  \"payment\": " + (payment != null ? payment.getId() : null) +
-                ",\n  \"items\": " + items +
+                "  \"id\": " + this.id +
+                ",\n  \"moment\": \"" + this.moment + "\"" +
+                ",\n  \"client\": " + (this.client != null ? this.client.getId() : null) +
+                ",\n  \"payment\": " + (this.payment != null ? this.payment.getId() : null) +
+                ",\n  \"items\": " + this.items +
                 "\n}";
     }
     

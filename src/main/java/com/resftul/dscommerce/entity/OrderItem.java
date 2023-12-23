@@ -60,9 +60,9 @@ public class OrderItem {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
-        OrderItem orderItem = (OrderItem) o;
+        OrderItem that = (OrderItem) o;
 
-        return Objects.equals(id, orderItem.id);
+        return Objects.equals(this.id, that.id);
     }
 
     @Override
@@ -73,9 +73,9 @@ public class OrderItem {
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + id +
-                ",\n  \"quantity\": " + quantity +
-                ",\n  \"price\": " + price +
+                "  \"id\": " + this.id +
+                ",\n  \"quantity\": " + this.quantity +
+                ",\n  \"price\": " + this.price +
                 "\n}";
     }
 

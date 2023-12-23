@@ -32,21 +32,21 @@ public class Category {
         if (obj == null) return false;
         if (this.getClass() != obj.getClass()) return false;
 
-        Category category = (Category) obj;
+        Category that = (Category) obj;
 
-        return Objects.equals(id, category.id);
+        return Objects.equals(this.id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.id);
     }
 
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + id +
-                ",\n  \"name\": \"" + name + '\"' +
+                "  \"id\": " + this.id +
+                ",\n  \"name\": \"" + this.name + '\"' +
                 "\n}";
     }
     

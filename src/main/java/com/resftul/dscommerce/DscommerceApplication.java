@@ -27,7 +27,6 @@ public class DscommerceApplication implements CommandLineRunner {
         user.setPhone("1234567890");
         user.setBirthDate(LocalDate.of(2001, 12, 6));
         user.setPassword("password123");
-        user.setRoles("ROLE_USER");
 
         // Exemplo de Product
         Product product = new Product();

@@ -66,12 +66,12 @@ public class Product {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
-        Product product = (Product) o;
+        Product that = (Product) o;
 
-        return Objects.equals(this.id, product.id) &&
-                Objects.equals(this.name, product.name) &&
-                Objects.equals(this.price, product.price) &&
-                Objects.equals(this.imgUrl, product.imgUrl);
+        return Objects.equals(this.id, that.id) &&
+                Objects.equals(this.name, that.name) &&
+                Objects.equals(this.price, that.price) &&
+                Objects.equals(this.imgUrl, that.imgUrl);
     }
 
     @Override

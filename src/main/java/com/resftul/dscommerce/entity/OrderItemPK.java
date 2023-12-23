@@ -32,8 +32,8 @@ public class OrderItemPK implements Serializable {
 
         OrderItemPK that = (OrderItemPK) o;
 
-        return Objects.equals(order, that.order) &&
-                Objects.equals(product, that.product);
+        return Objects.equals(this.order, that.order) &&
+                Objects.equals(this.product, that.product);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class OrderItemPK implements Serializable {
         int hash = 7;
         final int prime = 31;
 
-        hash *= prime + (order == null ? 0 : order.hashCode());
-        hash *= prime + (product == null ? 0 : product.hashCode());
+        hash *= prime + (this.order == null ? 0 : this.order.hashCode());
+        hash *= prime + (this.product == null ? 0 : this.product.hashCode());
 
         if (hash < 0)
             hash *= -1;
@@ -54,8 +54,8 @@ public class OrderItemPK implements Serializable {
     @Override
     public String toString() {
         return "{\n" +
-                "  \"order\": " + (order != null ? order.getId() : null) +
-                ",\n  \"product\": " + (product != null ? product.getId() : null) +
+                "  \"order\": " + (this.order != null ? order.getId() : null) +
+                ",\n  \"product\": " + (this.product != null ? product.getId() : null) +
                 "\n}";
     }
 
