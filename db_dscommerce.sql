@@ -2,6 +2,14 @@ DROP DATABASE IF EXISTS db_dscommerce;
 CREATE DATABASE IF NOT EXISTS db_dscommerce;
 USE db_dscommerce;
 
+-- Consulta para obter informações do usuário e suas permissões
+SELECT tb_user.user_email AS username, tb_user.user_password, tb_role.id AS roleId, tb_role.authority
+FROM tb_user
+         INNER JOIN tb_user_role ON tb_user.id = tb_user_role.user_id
+         INNER JOIN tb_role ON tb_role.id = tb_user_role.role_id
+WHERE tb_user.user_email = 'viniciusdsandrade0663@gmail.com';
+
+
 CREATE TABLE IF NOT EXISTS tb_user
 (
     id              BIGINT UNSIGNED AUTO_INCREMENT,
@@ -88,14 +96,15 @@ CREATE TABLE IF NOT EXISTS OrderStatus
     PRIMARY KEY (id)
 );
 
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('Vinícius', 'vinicius_andrade2010@hotmail.com', 'MinhaSenhaSecreta','2001-12-06', '(19) 974133884)');
-INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('Vinícius', 'viniciusdsandrade0662@gmail.com', 'MinhaSenhaSecreta','2001-12-06', '(19) 974133884)');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('Vinícius', 'vinicius_andrade2011@hotmail.com', '$2a$10$9S/26SgTEPlofyZRgGcxGOauHI5Fp/JfT7Q25kkE2VYQoj08oilHa','2001-12-06', '(19) 974133884)');
+INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('Vinícius', 'viniciusdsandrade0663@gmail.com', '$2a$10$9S/26SgTEPlofyZRgGcxGOauHI5Fp/JfT7Q25kkE2VYQoj08oilHa','2001-12-06', '(19) 974133884)');
+
 INSERT INTO tb_role(authority) VALUES ('ROLE_OPERATOR');
 INSERT INTO tb_role(authority) VALUES ('ROLE_ADMIN');
 
-INSERT INTO tb_user_roles(user_id, role_id) VALUES (1, 1);
-INSERT INTO tb_user_roles(user_id, role_id) VALUES (2, 1);
-INSERT INTO tb_user_roles(user_id, role_id) VALUES (2, 2);
+INSERT INTO tb_user_role(user_id, role_id) VALUES (1, 1);
+INSERT INTO tb_user_role(user_id, role_id) VALUES (2, 1);
+INSERT INTO tb_user_role(user_id, role_id) VALUES (2, 2);
 
 INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User1', 'user1@example.com', 'password1', '1990-01-01', '1234567890');
 INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User2', 'user2@example.com', 'password2', '1991-02-02', '2345678901');
