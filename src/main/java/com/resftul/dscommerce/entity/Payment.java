@@ -58,5 +58,4 @@ public class Payment {
         this.moment = payment.moment;
         this.order = payment.order;
     }
-
 }

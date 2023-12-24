@@ -97,7 +97,6 @@ INSERT INTO tb_user_roles(user_id, role_id) VALUES (1, 1);
 INSERT INTO tb_user_roles(user_id, role_id) VALUES (2, 1);
 INSERT INTO tb_user_roles(user_id, role_id) VALUES (2, 2);
 
-
 INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User1', 'user1@example.com', 'password1', '1990-01-01', '1234567890');
 INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User2', 'user2@example.com', 'password2', '1991-02-02', '2345678901');
 INSERT INTO tb_user (user_name, user_email, user_password, user_birth_date, user_phone) VALUES ('User3', 'user3@example.com', 'password3', '1992-03-03', '3456789012');

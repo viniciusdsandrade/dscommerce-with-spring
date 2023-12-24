@@ -29,10 +29,10 @@ public class Role {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 
-        Role role = (Role) o;
+        Role that = (Role) o;
 
-        return Objects.equals(this.id, role.id) &&
-                Objects.equals(this.authority, role.authority);
+        return Objects.equals(this.id, that.id) &&
+                Objects.equals(this.authority, that.authority);
     }
 
     @Override

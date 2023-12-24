@@ -7,8 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface AutoProductMapper {
-    
-    
+
     AutoProductMapper MAPPER = Mappers.getMapper(AutoProductMapper.class);
     
     ProductDTO mapsToProductDTO(Product product);

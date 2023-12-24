@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-
     /**
      * Verifica a existência de um produto pelo nome e descrição.
      *
