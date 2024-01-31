@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -17,6 +18,9 @@ import java.util.*;
 @Entity(name = "User")
 @Table(name = "tb_user")
 public class User implements UserDetails {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +55,7 @@ public class User implements UserDetails {
 
 
     public void addRole(Role role) {
-        this.roles.add(role);
+        roles.add(role);
     }
 
     public boolean hasRole(String roleName) {
@@ -78,7 +82,16 @@ public class User implements UserDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.email);
+        final int prime = 31;
+        int hash = 1;
+
+        hash *= prime + (this.id == null ? 0 : this.id.hashCode());
+        hash *= prime + (this.email == null ? 0 : this.email.hashCode());
+
+        if (hash < 0)
+            hash *= -1;
+
+        return hash;
     }
 
     @Override
@@ -103,7 +116,7 @@ public class User implements UserDetails {
         this.password = user.password;
         this.roles = user.roles;
 
-        // Crie um novo conjunto para garantir uma cópia profunda
+
         this.orders = new ArrayList<>(user.orders.size());
         for (Order order : user.orders) {
             this.orders.add(new Order(order));
@@ -112,12 +125,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        return roles;
     }
 
     @Override
     public String getUsername() {
-        return this.email;
+        return email;
     }
 
     @Override

@@ -23,7 +23,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
-
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
