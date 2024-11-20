@@ -8,7 +8,6 @@ import com.resftul.dscommerce.mapper.ProductMapper;
 import com.resftul.dscommerce.repository.ProductRepository;
 import com.resftul.dscommerce.service.ProductService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -17,11 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+import static org.slf4j.LoggerFactory.getLogger;
+
+@Service("productService")
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private static final Logger logger = getLogger(ProductServiceImpl.class);
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;

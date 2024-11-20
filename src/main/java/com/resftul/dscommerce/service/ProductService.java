@@ -5,8 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 public interface ProductService {
 
     @Transactional
@@ -18,7 +16,7 @@ public interface ProductService {
     ProductDTO update(Long id, ProductDTO productDTO);
 
     @Transactional(readOnly = true)
-    Page<ProductDTO> findAll(String name,Pageable pageable);
+    Page<ProductDTO> findAll(String name, Pageable pageable);
 
     void delete(Long id);
 

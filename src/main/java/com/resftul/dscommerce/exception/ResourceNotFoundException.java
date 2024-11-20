@@ -3,13 +3,15 @@ package com.resftul.dscommerce.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 /**
  * Exceção lançada quando um recurso não é encontrado.
  * <p>
  * Esta exceção é anotada com {@code @ResponseStatus(HttpStatus.NOT_FOUND)}, indicando
  * que resultará em uma resposta HTTP 404 (Not Found) quando lançada.
  */
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
+@ResponseStatus(NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 
     private String resourceName;
@@ -26,7 +28,7 @@ public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String resourceName,
                                      String fieldName,
                                      Object fieldValue) {
-        
+
         super(String.format("%s not found with %s : '%s'", resourceName, fieldName, fieldValue));
 
         this.resourceName = resourceName;
