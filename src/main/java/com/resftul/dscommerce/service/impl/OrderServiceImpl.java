@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
         this.authService = authService;
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public OrderDTO findById(Long id) {
         Order order = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
@@ -43,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
         return new OrderDTO(order);
     }
 
+    @Override
     @Transactional
     public OrderDTO insert(OrderDTO dto) {
 
