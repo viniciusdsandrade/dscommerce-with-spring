@@ -1,5 +1,6 @@
 package com.resftul.dscommerce.dto;
 
+import com.resftul.dscommerce.entity.Product;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,14 @@ public class ProductDTO {
     @URL(message = "Invalid URL")
     private String imageUrl;
 
+    public ProductDTO(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.imageUrl = product.getImgUrl();
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -40,10 +49,10 @@ public class ProductDTO {
         ProductDTO that = (ProductDTO) o;
 
         return Objects.equals(this.getId(), that.getId()) &&
-                Objects.equals(this.getName(), that.getName()) &&
-                Objects.equals(this.getDescription(), that.getDescription()) &&
-                Objects.equals(this.getPrice(), that.getPrice()) &&
-                Objects.equals(this.getImageUrl(), that.getImageUrl());
+               Objects.equals(this.getName(), that.getName()) &&
+               Objects.equals(this.getDescription(), that.getDescription()) &&
+               Objects.equals(this.getPrice(), that.getPrice()) &&
+               Objects.equals(this.getImageUrl(), that.getImageUrl());
     }
 
     @Override
@@ -62,14 +71,5 @@ public class ProductDTO {
             hash = -hash;
 
         return hash;
-    }
-
-    // Copy constructor
-    public ProductDTO(ProductDTO entity) {
-        this.id = entity.getId();
-        this.name = entity.getName();
-        this.description = entity.getDescription();
-        this.price = entity.getPrice();
-        this.imageUrl = entity.getImageUrl();
     }
 }

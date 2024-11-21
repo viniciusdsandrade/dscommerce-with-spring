@@ -1,6 +1,5 @@
 package com.resftul.dscommerce.handler;
 
-import com.resftul.dscommerce.exception.ValidationErrorDetails;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;

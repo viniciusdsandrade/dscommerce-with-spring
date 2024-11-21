@@ -11,6 +11,9 @@ import java.io.Serial;
 import java.time.LocalDate;
 import java.util.*;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.NONE;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,7 +26,7 @@ public class User implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "user_name", nullable = false)
@@ -44,7 +47,7 @@ public class User implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "client")
-    @Setter(AccessLevel.NONE)
+    @Setter(NONE)
     private List<Order> orders = new ArrayList<>();
 
     @ManyToMany
@@ -52,7 +55,6 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
 
     public void addRole(Role role) {
         roles.add(role);

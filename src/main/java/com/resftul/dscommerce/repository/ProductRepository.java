@@ -28,6 +28,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return Uma {@link Page} contendo os resultados da busca.
      *         Cada elemento na página representa uma entidade {@link Product}.
      */
-    @Query("SELECT p FROM Product p WHERE UPPER(p.name) LIKE UPPER(CONCAT('%', :name, '%'))")
+    @Query("SELECT p " +
+           "FROM Product p " +
+           "WHERE UPPER(p.name) " +
+           "LIKE UPPER(CONCAT('%', :name, '%'))")
     Page<Product> searchByName(String name, Pageable pageable);
 }

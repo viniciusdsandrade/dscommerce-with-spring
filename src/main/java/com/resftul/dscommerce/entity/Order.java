@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +22,7 @@ import java.util.Set;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "order_moment",
@@ -26,11 +30,14 @@ public class Order {
             columnDefinition = "TIMESTAMP")
     private Instant moment;
 
+    @Enumerated(STRING)
+    private OrderStatus status;
+
     @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = ALL)
     private Payment payment;
 
     @Getter
@@ -60,14 +67,14 @@ public class Order {
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + this.id +
-                ",\n  \"moment\": \"" + this.moment + "\"" +
-                ",\n  \"client\": " + (this.client != null ? this.client.getId() : null) +
-                ",\n  \"payment\": " + (this.payment != null ? this.payment.getId() : null) +
-                ",\n  \"items\": " + this.items +
-                "\n}";
+               "  \"id\": " + this.id +
+               ",\n  \"moment\": \"" + this.moment + "\"" +
+               ",\n  \"client\": " + (this.client != null ? this.client.getId() : null) +
+               ",\n  \"payment\": " + (this.payment != null ? this.payment.getId() : null) +
+               ",\n  \"items\": " + this.items +
+               "\n}";
     }
-    
+
     public Order(Order order) {
         this.id = order.id;
         this.moment = order.moment;

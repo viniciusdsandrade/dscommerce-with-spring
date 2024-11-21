@@ -1,10 +1,14 @@
 package com.resftul.dscommerce.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity(name = "OrderItem")
 @Table(name = "tb_order_item")
@@ -41,18 +45,6 @@ public class OrderItem {
         this.price = price;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-    public Double getPrice() {
-        return price;
-    }
-    public void setPrice(Double price) {
-        this.price = price;
-    }
 
     @Override
     public boolean equals(Object o) {

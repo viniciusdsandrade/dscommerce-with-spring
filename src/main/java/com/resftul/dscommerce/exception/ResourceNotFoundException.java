@@ -14,25 +14,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @ResponseStatus(NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 
-    private String resourceName;
-    private String fieldName;
-    private Object fieldValue;
-
     /**
-     * Construtor da exceção ResourceNotFoundException.
+     * Construtor que inicializa a mensagem de erro da exceção.
      *
-     * @param resourceName Nome do recurso não encontrado.
-     * @param fieldName    Nome do campo associado ao recurso não encontrado.
-     * @param fieldValue   Valor do campo associado ao recurso não encontrado.
+     * @param message A mensagem de erro que descreve o problema ocorrido.
      */
-    public ResourceNotFoundException(String resourceName,
-                                     String fieldName,
-                                     Object fieldValue) {
-
-        super(String.format("%s not found with %s : '%s'", resourceName, fieldName, fieldValue));
-
-        this.resourceName = resourceName;
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
+    public ResourceNotFoundException(String message) {
+        super(message);
     }
 }

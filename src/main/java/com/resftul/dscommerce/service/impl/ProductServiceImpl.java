@@ -1,6 +1,7 @@
 package com.resftul.dscommerce.service.impl;
 
 import com.resftul.dscommerce.dto.ProductDTO;
+import com.resftul.dscommerce.dto.ProductMinDTO;
 import com.resftul.dscommerce.entity.Product;
 import com.resftul.dscommerce.exception.ProductAlreadyExistsException;
 import com.resftul.dscommerce.exception.ResourceNotFoundException;
@@ -13,69 +14,66 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
 @Service("productService")
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository;
+    private final ProductRepository repository;
     private static final Logger logger = getLogger(ProductServiceImpl.class);
 
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductServiceImpl(ProductRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     @Transactional
-    public ProductDTO save(ProductDTO productDTO) {
-
-        if (productRepository.existsByNameAndDescription(productDTO.getName(), productDTO.getDescription()))
+    public ProductDTO insert(ProductDTO productDTO) {
+        if (repository.existsByNameAndDescription(productDTO.getName(), productDTO.getDescription()))
             throw new ProductAlreadyExistsException("Um produto com o mesmo nome e descrição já existe.");
 
         Product product = ProductMapper.mapToProduct(productDTO);
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = repository.save(product);
 
         return ProductMapper.mapToProductDTO(savedProduct);
     }
 
     @Override
-    public ProductDTO findProductById(Long id) {
-
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
-
-        return ProductMapper.mapToProductDTO(product);
+    public ProductDTO findById(Long id) {
+        Product product = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Recurso não encontrado"));
+        return new ProductDTO(product);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<ProductDTO> findByName(String name, Pageable pageable) {
-
-        return productRepository.searchByName(name, pageable)
+        return repository.searchByName(name, pageable)
                 .map(ProductMapper::mapToProductDTO);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(String name, Pageable pageable) {
-        Page<Product> productPage = productRepository.searchByName(name, pageable);
-        return productPage.map(ProductMapper::mapToProductDTO);
+    public Page<ProductMinDTO> findAll(String name, Pageable pageable) {
+        Page<Product> result = repository.searchByName(name, pageable);
+        return result.map(ProductMinDTO::new);
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = SUPPORTS)
     public void delete(Long id) {
 
         try {
-            productRepository.deleteById(id);
+            repository.deleteById(id);
             logger.info("Product with id {} deleted successfully.", id);
         } catch (EmptyResultDataAccessException err) {
-            throw new ResourceNotFoundException("Product", "id", id);
+            String message = format("Product with id %d not found.", id);
+            logger.error(message, err);
+            throw new ResourceNotFoundException("Product not found with id " + id);
         } catch (DataIntegrityViolationException err) {
-            String message = String.format("Cannot delete product with id %d because it has associated orders.", id);
+            String message = format("Cannot delete product with id %d because it has associated orders.", id);
             logger.error(message, err);
             throw new DataIntegrityViolationException(message, err);
         }
@@ -84,31 +82,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO update(Long id, ProductDTO productDTO) {
 
-        Product productToUpdate = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+        Product productToUpdate = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
 
         productToUpdate.setName(productDTO.getName());
         productToUpdate.setDescription(productDTO.getDescription());
         productToUpdate.setPrice(productDTO.getPrice());
         productToUpdate.setImgUrl(productDTO.getImageUrl());
 
-        Product updatedProduct = productRepository.save(productToUpdate);
-
-        return ProductMapper.mapToProductDTO(updatedProduct);
-    }
-
-    @Override
-    public ProductDTO update(ProductDTO productDTO) {
-
-        Product productToUpdate = productRepository.findById(productDTO.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productDTO.getId()));
-
-        productToUpdate.setName(productDTO.getName());
-        productToUpdate.setDescription(productDTO.getDescription());
-        productToUpdate.setPrice(productDTO.getPrice());
-        productToUpdate.setImgUrl(productDTO.getImageUrl());
-
-        Product updatedProduct = productRepository.save(productToUpdate);
+        Product updatedProduct = repository.save(productToUpdate);
 
         return ProductMapper.mapToProductDTO(updatedProduct);
     }

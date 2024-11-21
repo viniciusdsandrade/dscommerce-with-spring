@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.NONE;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,14 +19,14 @@ import java.util.Set;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "category_name", nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    @Setter(AccessLevel.NONE)
+    @Setter(NONE)
     private Set<Product> products = new HashSet<>();
 
     @Override
@@ -45,11 +48,11 @@ public class Category {
     @Override
     public String toString() {
         return "{\n" +
-                "  \"id\": " + this.id +
-                ",\n  \"name\": \"" + this.name + '\"' +
-                "\n}";
+               "  \"id\": " + this.id +
+               ",\n  \"name\": \"" + this.name + '\"' +
+               "\n}";
     }
-    
+
     public Category(Category category) {
         this.id = category.id;
         this.name = category.name;
