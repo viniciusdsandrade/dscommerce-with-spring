@@ -13,15 +13,15 @@ public interface ProductService {
     @Transactional
     ProductDTO insert(ProductDTO productDTO);
 
-    ProductDTO findById(Long id);
-
     @Transactional
     ProductDTO update(Long id, ProductDTO productDTO);
 
-    Page<ProductMinDTO> findAll(String name, Pageable pageable);
-
     @Transactional(propagation = SUPPORTS)
     void delete(Long id);
+
+    ProductDTO findById(Long id);
+
+    Page<ProductMinDTO> findAll(String name, Pageable pageable);
 
     Page<ProductDTO> findByName(String name, Pageable pageable);
 }
