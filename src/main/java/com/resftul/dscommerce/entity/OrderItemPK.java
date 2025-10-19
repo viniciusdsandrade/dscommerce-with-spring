@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Objects;
 
+// Crie um novo conjunto para garantir uma cópia profunda
 @Getter
 @Setter
 @NoArgsConstructor

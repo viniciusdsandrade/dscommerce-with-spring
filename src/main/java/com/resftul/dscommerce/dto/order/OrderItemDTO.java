@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.dto;
+package com.resftul.dscommerce.dto.order;
 
 import com.resftul.dscommerce.entity.OrderItem;
 

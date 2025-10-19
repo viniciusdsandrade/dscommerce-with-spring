@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.service;
 
-import com.resftul.dscommerce.dto.OrderDTO;
+import com.resftul.dscommerce.dto.order.OrderDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface OrderService {

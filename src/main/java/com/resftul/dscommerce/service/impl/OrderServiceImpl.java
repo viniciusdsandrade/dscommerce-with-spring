@@ -1,7 +1,7 @@
 package com.resftul.dscommerce.service.impl;
 
-import com.resftul.dscommerce.dto.OrderDTO;
-import com.resftul.dscommerce.dto.OrderItemDTO;
+import com.resftul.dscommerce.dto.order.OrderDTO;
+import com.resftul.dscommerce.dto.order.OrderItemDTO;
 import com.resftul.dscommerce.entity.*;
 import com.resftul.dscommerce.exception.ResourceNotFoundException;
 import com.resftul.dscommerce.repository.OrderItemRepository;

@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.controller;
 
-import com.resftul.dscommerce.dto.OrderDTO;
+import com.resftul.dscommerce.dto.order.OrderDTO;
 import com.resftul.dscommerce.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

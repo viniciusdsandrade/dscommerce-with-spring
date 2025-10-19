@@ -5,20 +5,22 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.NONE;
 
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "Product")
 @Table(name = "tb_product")
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "product_name")
@@ -37,10 +39,10 @@ public class Product {
     @JoinTable(name = "tb_product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    @Setter(AccessLevel.NONE)
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "id.product")
+    @Setter(NONE)
     private Set<OrderItem> items = new HashSet<>();
 
     public Product(Long id,
@@ -60,37 +62,6 @@ public class Product {
     }
 
     @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
-
-        Product that = (Product) o;
-
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.name, that.name) &&
-                Objects.equals(this.price, that.price) &&
-                Objects.equals(this.imgUrl, that.imgUrl);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int hash = 1;
-
-        hash *= prime + ((this.id == null) ? 0 : this.id.hashCode());
-        hash *= prime + ((this.imgUrl == null) ? 0 : this.imgUrl.hashCode());
-        hash *= prime + ((this.name == null) ? 0 : this.name.hashCode());
-        hash *= prime + ((this.price == null) ? 0 : this.price.hashCode());
-
-        if (hash < 0)
-            hash *= -1;
-
-        return hash;
-    }
-
-    @Override
     public String toString() {
         return "{\n" +
                 "  \"id\": " + this.id +
@@ -101,7 +72,6 @@ public class Product {
                 "\n}";
     }
 
-    // Construtor de cópia.
     public Product(Product product) {
         this.id = product.id;
         this.name = product.name;
@@ -109,7 +79,6 @@ public class Product {
         this.price = product.price;
         this.imgUrl = product.imgUrl;
 
-        // Copie o conteúdo dos conjuntos para evitar compartilhamento de estado.
         this.categories = new HashSet<>(product.categories);
         this.items = new HashSet<>(product.items);
     }

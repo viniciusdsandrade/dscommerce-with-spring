@@ -57,7 +57,6 @@ public class Category {
         this.id = category.id;
         this.name = category.name;
 
-        // Crie um novo conjunto para garantir uma cópia profunda
         this.products = new HashSet<>(category.products.size());
         for (Product product : category.products) {
             this.products.add(new Product(product));

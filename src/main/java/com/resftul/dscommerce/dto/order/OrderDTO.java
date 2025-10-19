@@ -1,5 +1,7 @@
-package com.resftul.dscommerce.dto;
+package com.resftul.dscommerce.dto.order;
 
+import com.resftul.dscommerce.dto.ClientDTO;
+import com.resftul.dscommerce.dto.PaymentDTO;
 import com.resftul.dscommerce.entity.Order;
 import com.resftul.dscommerce.entity.OrderItem;
 import com.resftul.dscommerce.entity.OrderStatus;
