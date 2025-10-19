@@ -12,18 +12,19 @@ import java.util.Optional;
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query(nativeQuery = true, value = """
-             	SELECT\s
-             		tb_user.user_email AS username,\s
-             		tb_user.user_password,\s
-             		tb_role.id AS roleId,\s
-             		tb_role.authority
-             	FROM tb_user
-             	INNER JOIN tb_user_role ON tb_user.id = tb_user_role.user_id
-             	INNER JOIN tb_role ON tb_role.id = tb_user_role.role_id
-             	WHERE tb_user.user_email = :email
-            \s""")
-    List<UserDetailsProjection> searchUserAndRolesByEmail(String email);
-
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+
+    @Query(value = """
+            SELECT u.email     AS username,
+                   u.password  AS password,
+                   r.id        AS roleId,
+                   r.authority AS authority
+            FROM tb_user u
+            JOIN tb_user_role ur ON u.id = ur.user_id
+            JOIN tb_role r       ON r.id = ur.role_id
+            WHERE u.email = :email
+            """, nativeQuery = true)
+    List<UserDetailsProjection> searchUserAndRolesByEmail(String email);
 }

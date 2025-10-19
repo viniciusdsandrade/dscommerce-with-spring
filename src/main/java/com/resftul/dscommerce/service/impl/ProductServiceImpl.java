@@ -1,7 +1,7 @@
 package com.resftul.dscommerce.service.impl;
 
 import com.resftul.dscommerce.dto.ProductDTO;
-import com.resftul.dscommerce.dto.ProductMinDTO;
+import com.resftul.dscommerce.dto.product.ProductMinDTO;
 import com.resftul.dscommerce.entity.Product;
 import com.resftul.dscommerce.exception.ProductAlreadyExistsException;
 import com.resftul.dscommerce.exception.ResourceNotFoundException;

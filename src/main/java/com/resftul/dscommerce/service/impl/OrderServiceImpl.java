@@ -9,6 +9,7 @@ import com.resftul.dscommerce.repository.OrderRepository;
 import com.resftul.dscommerce.repository.ProductRepository;
 import com.resftul.dscommerce.service.AuthService;
 import com.resftul.dscommerce.service.OrderService;
+import com.resftul.dscommerce.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

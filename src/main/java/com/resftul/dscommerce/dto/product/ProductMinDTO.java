@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.dto;
+package com.resftul.dscommerce.dto.product;
 
 
 import com.resftul.dscommerce.entity.Product;

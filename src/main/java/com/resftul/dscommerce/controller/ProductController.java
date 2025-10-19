@@ -1,7 +1,7 @@
 package com.resftul.dscommerce.controller;
 
 import com.resftul.dscommerce.dto.ProductDTO;
-import com.resftul.dscommerce.dto.ProductMinDTO;
+import com.resftul.dscommerce.dto.product.ProductMinDTO;
 import com.resftul.dscommerce.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
