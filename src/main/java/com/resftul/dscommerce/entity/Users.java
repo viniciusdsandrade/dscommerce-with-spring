@@ -18,8 +18,8 @@ import static lombok.AccessLevel.NONE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "User")
-@Table(name = "tb_user")
-public class User implements UserDetails {
+@Table(name = "tb_users")
+public class Users implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -35,12 +35,12 @@ public class User implements UserDetails {
     @ToString.Exclude
     @Setter(NONE)
     @JoinTable(
-            name = "tb_user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "tb_users_roles",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
     @ManyToMany(fetch = LAZY)
-    private Set<Role> roles = new HashSet<>();
+    private Set<Roles> roles = new HashSet<>();
 
     public void initializeProfile(String firstName, String lastName, String normalizedEmail, String passwordHash) {
         this.firstName = requireNonBlank(firstName, "firstName");
@@ -69,7 +69,7 @@ public class User implements UserDetails {
         apply.accept(v);
     }
 
-    public void addRole(Role referenceById) {
+    public void addRole(Roles referenceById) {
         this.roles.add(referenceById);
     }
 
@@ -110,8 +110,8 @@ public class User implements UserDetails {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+        Users users = (Users) o;
+        return getId() != null && Objects.equals(getId(), users.getId());
     }
 
     @Override
@@ -120,8 +120,8 @@ public class User implements UserDetails {
     }
 
     public boolean hasRole(String roleAdmin) {
-        for (Role role : roles) {
-            if (role.getAuthority().equals(roleAdmin)) {
+        for (Roles roles : this.roles) {
+            if (roles.getAuthority().equals(roleAdmin)) {
                 return true;
             }
         }

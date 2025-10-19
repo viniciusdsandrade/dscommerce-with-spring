@@ -18,7 +18,7 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/userss")
 public class UserController {
 
     private final UserService userService;

@@ -4,7 +4,7 @@ package com.resftul.dscommerce.service;
 import com.resftul.dscommerce.dto.user.UserDTO;
 import com.resftul.dscommerce.dto.user.UserInsertDTO;
 import com.resftul.dscommerce.dto.user.UserUpdateDTO;
-import com.resftul.dscommerce.entity.User;
+import com.resftul.dscommerce.entity.Users;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -21,5 +21,5 @@ public interface UserService {
     @Transactional
     UserDTO update(Long id, @Valid UserUpdateDTO userInsertDTO);
 
-    User authenticated();
+    Users authenticated();
 }

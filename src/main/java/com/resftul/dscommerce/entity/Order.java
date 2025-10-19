@@ -35,7 +35,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private User client;
+    private Users client;
 
     @OneToOne(mappedBy = "order", cascade = ALL)
     private Payment payment;

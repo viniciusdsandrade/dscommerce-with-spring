@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.dto;
 
-import com.resftul.dscommerce.entity.User;
+import com.resftul.dscommerce.entity.Users;
 
 public class ClientDTO {
     private Long id;
@@ -11,7 +11,7 @@ public class ClientDTO {
         this.name = name;
     }
 
-    public ClientDTO(User entity) {
+    public ClientDTO(Users entity) {
         id = entity.getId();
         name = entity.getFirstName();
     }

@@ -53,8 +53,8 @@ public class OrderServiceImpl implements OrderService {
         order.setMoment(now());
         order.setStatus(WAITING_PAYMENT);
 
-        User user = userService.authenticated();
-        order.setClient(user);
+        Users users = userService.authenticated();
+        order.setClient(users);
 
         for (OrderItemDTO itemDto : dto.getItems()) {
             Product product = productRepository.getReferenceById(itemDto.getProductId());

@@ -2,7 +2,7 @@ package com.resftul.dscommerce.dto.user;
 
 
 import com.resftul.dscommerce.dto.RoleDTO;
-import com.resftul.dscommerce.entity.User;
+import com.resftul.dscommerce.entity.Users;
 import lombok.*;
 
 import java.util.HashSet;
@@ -21,11 +21,11 @@ public class UserDTO {
     @Setter(AccessLevel.NONE)
     private Set<RoleDTO> roles = new HashSet<>();
 
-    public UserDTO(User user) {
-        this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName  = user.getLastName();
-        this.email     = user.getEmail();
-        user.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
+    public UserDTO(Users users) {
+        this.id = users.getId();
+        this.firstName = users.getFirstName();
+        this.lastName  = users.getLastName();
+        this.email     = users.getEmail();
+        users.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
     }
 }

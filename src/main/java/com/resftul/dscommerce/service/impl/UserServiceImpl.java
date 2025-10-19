@@ -3,8 +3,8 @@ package com.resftul.dscommerce.service.impl;
 import com.resftul.dscommerce.dto.user.UserDTO;
 import com.resftul.dscommerce.dto.user.UserInsertDTO;
 import com.resftul.dscommerce.dto.user.UserUpdateDTO;
-import com.resftul.dscommerce.entity.Role;
-import com.resftul.dscommerce.entity.User;
+import com.resftul.dscommerce.entity.Roles;
+import com.resftul.dscommerce.entity.Users;
 import com.resftul.dscommerce.exception.DuplicateEntryException;
 import com.resftul.dscommerce.exception.ResourceNotFoundException;
 import com.resftul.dscommerce.projections.UserDetailsProjection;
@@ -56,26 +56,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         List<UserDetailsProjection> results = userRepository.searchUserAndRolesByEmail(username);
         if (results.isEmpty())
             throw new UsernameNotFoundException("Email not found: " + username);
-        User user = new User();
-        user.setEmail(results.get(0).getUsername());
-        user.setPassword(results.get(0).getPassword());
-        results.forEach(projection -> user.addRole(
-                new Role(projection.getRoleId(), projection.getAuthority())
+        Users users = new Users();
+        users.setEmail(results.get(0).getUsername());
+        users.setPassword(results.get(0).getPassword());
+        results.forEach(projection -> users.addRole(
+                new Roles(projection.getRoleId(), projection.getAuthority())
         ));
-        return user;
+        return users;
     }
 
     @Override
     public Page<UserDTO> findAllPaged(Pageable pageable) {
-        Page<User> list = userRepository.findAll(pageable);
+        Page<Users> list = userRepository.findAll(pageable);
         return list.map(UserDTO::new);
     }
 
     @Override
     public UserDTO findById(Long id) {
-        User user = userRepository.findById(id)
+        Users users = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return new UserDTO(user);
+        return new UserDTO(users);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new DuplicateEntryException("Email already exists: " + normalizedEmail);
 
         try {
-            User entity = new User();
+            Users entity = new Users();
             entity.initializeProfile(
                     dto.firstName(),
                     dto.lastName(),
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDTO update(final Long id, final UserUpdateDTO dto) {
-        final User entity = userRepository.findById(id)
+        final Users entity = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         final Authentication auth = requireAuthenticated();
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User authenticated() {
+    public Users authenticated() {
         return null;
     }
 
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return auth.getName();
     }
 
-    private void assertOwner(User entity, String requesterIdentity) {
+    private void assertOwner(Users entity, String requesterIdentity) {
         String ownerEmail = entity.getEmail();
         boolean isOwner = ownerEmail != null
                 && ownerEmail.equalsIgnoreCase(requesterIdentity);
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return raw.trim().toLowerCase(ROOT);
     }
 
-    private void validateEmailChange(User entity, String newEmail, Long id) {
+    private void validateEmailChange(Users entity, String newEmail, Long id) {
         if (entity.getEmail() != null && entity.getEmail().equalsIgnoreCase(newEmail))
             throw new DuplicateEntryException("New email must be different from current");
         if (userRepository.existsByEmailIgnoreCaseAndIdNot(newEmail, id))

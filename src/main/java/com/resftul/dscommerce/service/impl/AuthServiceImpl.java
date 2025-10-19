@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.service.impl;
 
-import com.resftul.dscommerce.entity.User;
+import com.resftul.dscommerce.entity.Users;
 import com.resftul.dscommerce.exception.ForbiddenException;
 import com.resftul.dscommerce.service.AuthService;
 import com.resftul.dscommerce.service.UserService;
@@ -17,7 +17,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void validateSelfOrAdmin(long userId) {
-        User me = userService.authenticated();
+        Users me = userService.authenticated();
         if (!me.hasRole("ROLE_ADMIN") && !me.getId().equals(userId)) {
             throw new ForbiddenException("Access denied");
         }
