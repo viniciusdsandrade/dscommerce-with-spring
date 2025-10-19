@@ -22,4 +22,6 @@ public interface UserService {
     UserDTO update(Long id, @Valid UserUpdateDTO userInsertDTO);
 
     Users authenticated();
+
+    UserDTO getMe();
 }

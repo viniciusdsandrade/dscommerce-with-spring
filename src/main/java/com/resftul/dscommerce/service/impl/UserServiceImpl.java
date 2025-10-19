@@ -131,6 +131,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return null;
     }
 
+    @Override
+    public UserDTO getMe() {
+        final Authentication auth = requireAuthenticated();
+        final String requester = resolveRequesterIdentity(auth);
+
+        final Users entity = userRepository.findByEmail(requester)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return new UserDTO(entity);
+    }
+
     private Authentication requireAuthenticated() {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated())

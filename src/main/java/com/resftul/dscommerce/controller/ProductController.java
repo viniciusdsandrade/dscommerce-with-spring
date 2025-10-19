@@ -3,6 +3,7 @@ package com.resftul.dscommerce.controller;
 import com.resftul.dscommerce.dto.ProductDTO;
 import com.resftul.dscommerce.dto.product.ProductMinDTO;
 import com.resftul.dscommerce.service.ProductService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping({"/api/v1/product", "/products", "/produts"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
@@ -24,12 +25,14 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PermitAll
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         ProductDTO dto = productService.findById(id);
         return ResponseEntity.ok(dto);
     }
 
+    @PermitAll
     @GetMapping
     public ResponseEntity<Page<ProductMinDTO>> findAll(
             @RequestParam(name = "name", defaultValue = "") String name,
@@ -38,8 +41,7 @@ public class ProductController {
         return ResponseEntity.ok(dto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
         dto = productService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -47,14 +49,14 @@ public class ProductController {
         return ResponseEntity.created(uri).body(dto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
         dto = productService.update(id, dto);
         return ResponseEntity.ok(dto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
