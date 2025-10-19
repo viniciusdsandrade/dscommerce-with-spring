@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+@EqualsAndHashCode(callSuper = false)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,23 +29,6 @@ public class Payment {
     @OneToOne
     @MapsId
     private Order order;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
-
-        Payment that = (Payment) o;
-
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.moment, that.moment);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.moment);
-    }
 
     @Override
     public String toString() {

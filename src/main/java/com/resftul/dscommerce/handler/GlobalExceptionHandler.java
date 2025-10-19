@@ -25,8 +25,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     @Schema(description = "Manipula a exceção BadRequestException, lançada quando uma requisição malformada é recebida.")
-    public ResponseEntity<List<ErrorDetails>> handleBadRequestException(BadRequestException exception,
-                                                                        WebRequest webRequest) {
+    public ResponseEntity<List<ErrorDetails>> handleBadRequestException(
+            BadRequestException exception,
+            WebRequest webRequest
+    ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),
@@ -39,16 +41,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @Schema(description = "Manipula a exceção MethodArgumentNotValidException, lançada em caso de erros de validação.")
-    public ResponseEntity<List<ValidationErrorDetails>> handleValidationException(MethodArgumentNotValidException exception,
-                                                                                  WebRequest request) {
+    public ResponseEntity<List<ValidationErrorDetails>> handleValidationException(
+            MethodArgumentNotValidException exception,
+            WebRequest request) {
         List<ValidationErrorDetails> errors = new ArrayList<>();
         for (FieldError error : exception.getBindingResult().getFieldErrors()) {
             errors.add(new ValidationErrorDetails(
                     now(),
-                    error.getDefaultMessage(), // Mensagem mais amigável do Bean Validation
+                    error.getDefaultMessage(),
                     request.getDescription(false),
                     "METHOD_ARGUMENT_NOT_VALID_ERROR",
-                    error.getField() // Nome do campo com erro
+                    error.getField()
             ));
         }
         return ResponseEntity.status(BAD_REQUEST).body(errors);
@@ -56,8 +59,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @Schema(description = "Manipula a exceção IllegalArgumentException, lançada quando um argumento inválido é passado.")
-    public ResponseEntity<List<ErrorDetails>> handleIllegalArgumentException(IllegalArgumentException exception,
-                                                                             WebRequest webRequest) {
+    public ResponseEntity<List<ErrorDetails>> handleIllegalArgumentException(
+            IllegalArgumentException exception,
+            WebRequest webRequest
+    ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),
@@ -70,8 +75,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @Schema(description = "Manipula a exceção EntityNotFoundException, lançada quando uma entidade não é encontrada.")
-    public ResponseEntity<List<ErrorDetails>> handleEntityNotFoundException(EntityNotFoundException exception,
-                                                                            WebRequest webRequest) {
+    public ResponseEntity<List<ErrorDetails>> handleEntityNotFoundException(
+            EntityNotFoundException exception,
+            WebRequest webRequest
+    ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),
@@ -84,8 +91,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @Schema(description = "Manipula exceções que indicam que o tipo de mídia da requisição não é suportado.")
-    public ResponseEntity<List<ErrorDetails>> handleUnsupportedMediaTypeException(HttpMediaTypeNotSupportedException exception,
-                                                                                  WebRequest webRequest) {
+    public ResponseEntity<List<ErrorDetails>> handleUnsupportedMediaTypeException(
+            HttpMediaTypeNotSupportedException exception,
+            WebRequest webRequest
+    ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),
@@ -98,8 +107,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InternalServerError.class)
     @Schema(description = "Manipula exceções genéricas, representando erros inesperados durante o processamento da requisição.")
-    public ResponseEntity<List<ErrorDetails>> handleGlobalException(Exception exception,
-                                                                    WebRequest webRequest) {
+    public ResponseEntity<List<ErrorDetails>> handleGlobalException(
+            Exception exception,
+            WebRequest webRequest
+    ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),
@@ -112,8 +123,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnsupportedOperationException.class)
     @Schema(description = "Manipula exceções que indicam que uma funcionalidade não está implementada.")
-    public ResponseEntity<List<ErrorDetails>> handleNotImplementedException(UnsupportedOperationException exception,
-                                                                            WebRequest webRequest) {
+    public ResponseEntity<List<ErrorDetails>> handleNotImplementedException(
+            UnsupportedOperationException exception,
+            WebRequest webRequest
+    ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),

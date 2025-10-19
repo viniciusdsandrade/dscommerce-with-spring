@@ -78,6 +78,7 @@ public class Order {
     public Order(Order order) {
         this.id = order.id;
         this.moment = order.moment;
+        this.status = order.status;
         this.client = order.client;
         this.payment = order.payment;
         this.items = order.items;

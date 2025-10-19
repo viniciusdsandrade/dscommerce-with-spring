@@ -1,15 +1,17 @@
 package com.resftul.dscommerce.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
 
+@EqualsAndHashCode
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
+
 @Entity(name = "OrderItem")
 @Table(name = "tb_order_item")
 public class OrderItem {
@@ -43,23 +45,6 @@ public class OrderItem {
         id.setProduct(product);
         this.quantity = quantity;
         this.price = price;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
-
-        OrderItem that = (OrderItem) o;
-
-        return Objects.equals(this.id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
     }
 
     @Override

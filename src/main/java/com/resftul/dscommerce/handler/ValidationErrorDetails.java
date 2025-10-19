@@ -16,11 +16,13 @@ import java.time.LocalDateTime;
 public class ValidationErrorDetails extends ErrorDetails {
     private String field;
 
-    public ValidationErrorDetails(LocalDateTime timestamp,
-                                  String message,
-                                  String details,
-                                  String errorCode,
-                                  String field) {
+    public ValidationErrorDetails(
+            LocalDateTime timestamp,
+            String message,
+            String details,
+            String errorCode,
+            String field
+    ) {
         super(timestamp, message, details, errorCode);
         this.field = field;
     }

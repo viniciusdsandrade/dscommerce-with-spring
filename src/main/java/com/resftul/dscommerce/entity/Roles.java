@@ -9,6 +9,7 @@ import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

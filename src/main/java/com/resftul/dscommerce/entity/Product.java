@@ -45,11 +45,13 @@ public class Product {
     @Setter(NONE)
     private Set<OrderItem> items = new HashSet<>();
 
-    public Product(Long id,
-                   String name,
-                   String description,
-                   Double price,
-                   String imageUrl) {
+    public Product(
+            Long id,
+            String name,
+            String description,
+            Double price,
+            String imageUrl
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;
