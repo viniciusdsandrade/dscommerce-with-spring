@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.config;
+package com.resftul.dscommerce.doc;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.models.OpenAPI;
