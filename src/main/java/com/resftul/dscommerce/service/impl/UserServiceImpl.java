@@ -128,7 +128,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Users authenticated() {
-        return null;
+        final Authentication auth = requireAuthenticated();
+        final String requester = resolveRequesterIdentity(auth);
+        return userRepository.findByEmail(requester)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
