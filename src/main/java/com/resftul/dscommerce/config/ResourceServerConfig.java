@@ -33,7 +33,7 @@ public class ResourceServerConfig {
 	private String corsOrigins;
 
 	@Bean
-	@Profile("test")
+	@Profile("h2")
 	@Order(1)
 	SecurityFilterChain h2SecurityFilterChain(HttpSecurity http) throws Exception {
 		http.securityMatcher(PathRequest.toH2Console()).csrf(AbstractHttpConfigurer::disable);
