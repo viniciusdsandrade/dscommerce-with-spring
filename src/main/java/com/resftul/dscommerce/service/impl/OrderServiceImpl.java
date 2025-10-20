@@ -25,10 +25,12 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final AuthService authService;
 
-    public OrderServiceImpl(OrderRepository repository,
-                            ProductRepository productRepository,
-                            OrderItemRepository orderItemRepository,
-                            UserService userService, AuthService authService) {
+    public OrderServiceImpl(
+            OrderRepository repository,
+            ProductRepository productRepository,
+            OrderItemRepository orderItemRepository,
+            UserService userService, AuthService authService
+    ) {
         this.repository = repository;
         this.productRepository = productRepository;
         this.orderItemRepository = orderItemRepository;
