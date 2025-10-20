@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping({"/api/v1/product", "/products", "/produts"})
+@RequestMapping({"/api/v1/product", "/api/v1/products"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
