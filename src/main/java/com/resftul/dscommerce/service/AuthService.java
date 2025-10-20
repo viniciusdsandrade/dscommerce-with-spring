@@ -1,5 +1,5 @@
 package com.resftul.dscommerce.service;
 
 public interface AuthService {
-    void validateSelfOrAdmin(long userId);
+    void validateSelfOrAdmin(Long userId);
 }
