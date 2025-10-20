@@ -1,5 +1,3 @@
-USE db_dscommerce;
-
 INSERT INTO tb_roles (authority)
 SELECT 'ROLE_ADMIN'
 FROM DUAL
