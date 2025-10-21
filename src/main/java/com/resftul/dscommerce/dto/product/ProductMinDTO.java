@@ -2,8 +2,12 @@ package com.resftul.dscommerce.dto.product;
 
 
 import com.resftul.dscommerce.entity.Product;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode
+@NoArgsConstructor
 @Getter
 public class ProductMinDTO {
 
@@ -12,10 +16,12 @@ public class ProductMinDTO {
     private Double price;
     private String imgUrl;
 
-    public ProductMinDTO(Long id,
-                         String name,
-                         Double price,
-                         String imgUrl) {
+    public ProductMinDTO(
+            Long id,
+            String name,
+            Double price,
+            String imgUrl
+    ) {
         this.id = id;
         this.name = name;
         this.price = price;

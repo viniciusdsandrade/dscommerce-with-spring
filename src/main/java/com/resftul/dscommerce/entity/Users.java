@@ -13,10 +13,10 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.NONE;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "User")
 @Table(name = "tb_users")
 public class Users implements UserDetails {
@@ -27,19 +27,16 @@ public class Users implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
-
-    @ToString.Exclude
     private String password;
 
-    @BatchSize(size = 50)
-    @ToString.Exclude
-    @Setter(NONE)
+    @ManyToMany(fetch = LAZY)
     @JoinTable(
             name = "tb_users_roles",
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
-    @ManyToMany(fetch = LAZY)
+    @Setter(NONE)
+    @BatchSize(size = 50)
     private Set<Roles> roles = new HashSet<>();
 
     public void initializeProfile(String firstName, String lastName, String normalizedEmail, String passwordHash) {
@@ -117,14 +114,5 @@ public class Users implements UserDetails {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
-
-    public boolean hasRole(String roleAdmin) {
-        for (Roles roles : this.roles) {
-            if (roles.getAuthority().equals(roleAdmin)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

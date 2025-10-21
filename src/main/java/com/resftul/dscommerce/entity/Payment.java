@@ -1,18 +1,21 @@
 package com.resftul.dscommerce.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.time.Instant;
 import java.util.Objects;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "Payment")
 @Table(name = "tb_payment")
 public class Payment {
@@ -31,17 +34,18 @@ public class Payment {
     private Order order;
 
     @Override
-    public String toString() {
-        return "{\n" +
-                "  \"id\": " + this.id +
-                ",\n  \"moment\": \"" + this.moment + "\"" +
-                ",\n  \"orderId\": " + (this.order != null ? this.order.getId() : null) +
-                "\n}";
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Payment payment = (Payment) o;
+        return getId() != null && Objects.equals(getId(), payment.getId());
     }
 
-    public Payment(Payment payment) {
-        this.id = payment.id;
-        this.moment = payment.moment;
-        this.order = payment.order;
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

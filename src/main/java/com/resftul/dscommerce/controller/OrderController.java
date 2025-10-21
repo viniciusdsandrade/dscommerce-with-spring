@@ -38,12 +38,12 @@ public class OrderController {
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping
     public ResponseEntity<OrderDTO> insert(@Valid @RequestBody OrderDTO dto) {
-        service.insert(dto);
+        OrderDTO saved = service.insert(dto);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(dto.getId())
+                .buildAndExpand(saved.getId())
                 .toUri();
-        return created(uri).body(dto);
+        return created(uri).body(saved);
     }
 }

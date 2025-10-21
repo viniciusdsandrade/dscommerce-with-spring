@@ -1,11 +1,9 @@
 package com.resftul.dscommerce.dto.order;
 
 import com.resftul.dscommerce.entity.OrderItem;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

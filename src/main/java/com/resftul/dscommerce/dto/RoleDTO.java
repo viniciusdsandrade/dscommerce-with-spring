@@ -9,10 +9,10 @@ import lombok.Setter;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class RoleDTO {
 
     @JsonProperty(access = WRITE_ONLY)

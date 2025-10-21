@@ -6,10 +6,7 @@ import com.resftul.dscommerce.entity.Order;
 import com.resftul.dscommerce.entity.OrderItem;
 import com.resftul.dscommerce.entity.OrderStatus;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ import java.util.List;
 
 import static lombok.AccessLevel.NONE;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

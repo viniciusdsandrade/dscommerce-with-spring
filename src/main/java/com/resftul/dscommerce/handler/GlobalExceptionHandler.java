@@ -43,7 +43,8 @@ public class GlobalExceptionHandler {
     @Schema(description = "Manipula a exceção MethodArgumentNotValidException, lançada em caso de erros de validação.")
     public ResponseEntity<List<ValidationErrorDetails>> handleValidationException(
             MethodArgumentNotValidException exception,
-            WebRequest request) {
+            WebRequest request
+    ) {
         List<ValidationErrorDetails> errors = new ArrayList<>();
         for (FieldError error : exception.getBindingResult().getFieldErrors()) {
             errors.add(new ValidationErrorDetails(

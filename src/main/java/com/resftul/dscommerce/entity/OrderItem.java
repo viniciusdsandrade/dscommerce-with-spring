@@ -1,17 +1,18 @@
 package com.resftul.dscommerce.entity;
 
-import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
+import java.util.Objects;
 
-@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 @Setter
-
 @Entity(name = "OrderItem")
 @Table(name = "tb_order_item")
 public class OrderItem {
@@ -28,12 +29,6 @@ public class OrderItem {
     public Product getProduct() {
         return id.getProduct();
     }
-    public void setProduct(Product product) {
-        id.setProduct(product);
-    }
-    public void setOrder(Order order) {
-        id.setOrder(order);
-    }
 
     public OrderItem(
             Order order,
@@ -48,12 +43,14 @@ public class OrderItem {
     }
 
     @Override
-    public String toString() {
-        return "{\n" +
-                "  \"id\": " + this.id +
-                ",\n  \"quantity\": " + this.quantity +
-                ",\n  \"price\": " + this.price +
-                "\n}";
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return getId() != null && Objects.equals(getId(), orderItem.getId());
     }
 
     public OrderItem(OrderItem orderItem) {
