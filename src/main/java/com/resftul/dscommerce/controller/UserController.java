@@ -1,4 +1,5 @@
 package com.resftul.dscommerce.controller;
+
 import com.resftul.dscommerce.dto.user.UserDTO;
 import com.resftul.dscommerce.dto.user.UserInsertDTO;
 import com.resftul.dscommerce.dto.user.UserUpdateDTO;
@@ -19,7 +20,7 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping({ "/users"})
+@RequestMapping({"/users"})
 public class UserController {
 
     private final UserService userService;

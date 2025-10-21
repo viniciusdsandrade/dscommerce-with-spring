@@ -38,7 +38,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductMinDTO>> findAll(
             @RequestParam(name = "name", defaultValue = "") String name,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         Page<ProductMinDTO> dto = productService.findAll(name, pageable);
         return ok(dto);
     }
@@ -46,16 +47,19 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
-        dto = productService.insert(dto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(dto.getId()).toUri();
+        productService.insert(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(dto.getId())
+                .toUri();
         return created(uri).body(dto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
-        dto = productService.update(id, dto);
+        productService.update(id, dto);
         return ok(dto);
     }
 

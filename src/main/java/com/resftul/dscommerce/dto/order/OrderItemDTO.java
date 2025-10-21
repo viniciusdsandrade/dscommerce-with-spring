@@ -1,21 +1,21 @@
 package com.resftul.dscommerce.dto.order;
 
 import com.resftul.dscommerce.entity.OrderItem;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class OrderItemDTO {
     private Long productId;
     private String name;
     private Double price;
     private Integer quantity;
     private String imgUrl;
-
-    public OrderItemDTO(Long productId, String name, Double price, Integer quantity, String imgUrl) {
-        this.productId = productId;
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-        this.imgUrl = imgUrl;
-    }
 
     public OrderItemDTO(OrderItem entity) {
         productId = entity.getProduct().getId();
@@ -25,27 +25,9 @@ public class OrderItemDTO {
         imgUrl = entity.getProduct().getImgUrl();
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public Double getSubTotal() {
-        return price * quantity;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
+    public double getSubTotal() {
+        final double p = (price != null ? price : 0.0);
+        final int q = (quantity != null ? quantity : 0);
+        return p * q;
     }
 }

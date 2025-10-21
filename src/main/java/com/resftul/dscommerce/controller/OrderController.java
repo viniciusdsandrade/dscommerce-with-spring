@@ -19,7 +19,7 @@ import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.created;
 
 @RestController
-@RequestMapping(value = {"/api/v1/orders", "/orders"})
+@RequestMapping(value = { "/orders"})
 public class OrderController {
 
     private final OrderService service;
@@ -38,7 +38,7 @@ public class OrderController {
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping
     public ResponseEntity<OrderDTO> insert(@Valid @RequestBody OrderDTO dto) {
-        dto = service.insert(dto);
+        service.insert(dto);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
