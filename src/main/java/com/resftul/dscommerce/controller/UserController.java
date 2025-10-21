@@ -19,7 +19,7 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping({"/api/v1/userss", "/users"})
+@RequestMapping({ "/users"})
 public class UserController {
 
     private final UserService userService;
@@ -57,7 +57,7 @@ public class UserController {
     ) {
         UserDTO createdUser = userService.insert(userInsertDTO);
         URI uri = uriComponentsBuilder
-                .path("/api/v1/users/{id}")
+                .path("/users/{id}")
                 .buildAndExpand(createdUser.getId())
                 .toUri();
         return created(uri).body(createdUser);

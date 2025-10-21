@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
-@RequestMapping({"/api/v1/categories", "/api/v1/category"})
+@RequestMapping({"/api/v1/categories", "/categories"})
 public class CategoryController {
 
     private final CategoryService service;
@@ -24,6 +26,6 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> findAll() {
         List<CategoryDTO> list = service.findAll();
-        return ResponseEntity.ok(list);
+        return ok(list);
     }
 }

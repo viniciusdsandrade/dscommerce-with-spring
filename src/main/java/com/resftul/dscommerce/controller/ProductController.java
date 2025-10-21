@@ -14,8 +14,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
+import static org.springframework.http.ResponseEntity.*;
+
 @RestController
-@RequestMapping({"/api/v1/product", "/api/v1/products"})
+@RequestMapping({"/api/v1/product", "/products"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
@@ -29,7 +31,7 @@ public class ProductController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         ProductDTO dto = productService.findById(id);
-        return ResponseEntity.ok(dto);
+        return ok(dto);
     }
 
     @PermitAll
@@ -38,28 +40,29 @@ public class ProductController {
             @RequestParam(name = "name", defaultValue = "") String name,
             Pageable pageable) {
         Page<ProductMinDTO> dto = productService.findAll(name, pageable);
-        return ResponseEntity.ok(dto);
+        return ok(dto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
     public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
         dto = productService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
-        return ResponseEntity.created(uri).body(dto);
+        return created(uri).body(dto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
         dto = productService.update(id, dto);
-        return ResponseEntity.ok(dto);
+        return ok(dto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
-        return ResponseEntity.noContent().build();
+        return noContent().build();
     }
 }

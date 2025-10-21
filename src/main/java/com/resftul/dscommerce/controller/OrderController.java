@@ -19,7 +19,7 @@ import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.created;
 
 @RestController
-@RequestMapping(value = "/api/v1/orders")
+@RequestMapping(value = {"/api/v1/orders", "/orders"})
 public class OrderController {
 
     private final OrderService service;
