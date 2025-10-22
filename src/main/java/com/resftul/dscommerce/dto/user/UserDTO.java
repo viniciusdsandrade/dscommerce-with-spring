@@ -2,30 +2,34 @@ package com.resftul.dscommerce.dto.user;
 
 
 import com.resftul.dscommerce.dto.RoleDTO;
-import com.resftul.dscommerce.entity.Users;
+import com.resftul.dscommerce.entity.User;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+
+import static lombok.AccessLevel.NONE;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class UserDTO {
-
     private Long id;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
-    @Setter(AccessLevel.NONE)
+    private String phone;
+    private LocalDate birthDate;
+    @Setter(NONE)
     private Set<RoleDTO> roles = new HashSet<>();
 
-    public UserDTO(Users users) {
-        this.id = users.getId();
-        this.firstName = users.getFirstName();
-        this.lastName  = users.getLastName();
-        this.email     = users.getEmail();
-        users.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
+    public UserDTO(User user) {
+        this.id        = user.getId();
+        this.name      = user.getName();
+        this.email     = user.getEmail();
+        this.phone     = user.getPhone();
+        this.birthDate = user.getBirthDate();
+        user.getRoles().forEach(r -> this.roles.add(new RoleDTO(r)));
     }
 }

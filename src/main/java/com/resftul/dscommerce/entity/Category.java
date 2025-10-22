@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.NONE;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,11 +25,9 @@ public class Category {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(name = "category_name", nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    @Setter(NONE)
     private Set<Product> products = new HashSet<>();
 
     @Override

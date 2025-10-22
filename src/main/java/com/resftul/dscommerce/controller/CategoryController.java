@@ -16,16 +16,16 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping({"/api/v1/categories", "/categories"})
 public class CategoryController {
 
-    private final CategoryService service;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryService service) {
-        this.service = service;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @PermitAll
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> findAll() {
-        List<CategoryDTO> list = service.findAll();
+        List<CategoryDTO> list = categoryService.findAll();
         return ok(list);
     }
 }

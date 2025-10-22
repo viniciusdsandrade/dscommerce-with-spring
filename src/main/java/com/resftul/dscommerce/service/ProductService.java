@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.service;
 
-import com.resftul.dscommerce.dto.ProductDTO;
+import com.resftul.dscommerce.dto.product.ProductDTO;
 import com.resftul.dscommerce.dto.product.ProductMinDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

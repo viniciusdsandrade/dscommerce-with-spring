@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.controller;
 
-import com.resftul.dscommerce.dto.ProductDTO;
+import com.resftul.dscommerce.dto.product.ProductDTO;
 import com.resftul.dscommerce.dto.product.ProductMinDTO;
 import com.resftul.dscommerce.service.ProductService;
 import jakarta.annotation.security.PermitAll;
@@ -46,21 +46,24 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
-        productService.insert(dto);
+    public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO productDTO) {
+        productService.insert(productDTO);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(dto.getId())
+                .buildAndExpand(productDTO.getId())
                 .toUri();
-        return created(uri).body(dto);
+        return created(uri).body(productDTO);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
-        productService.update(id, dto);
-        return ok(dto);
+    public ResponseEntity<ProductDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductDTO productDTO
+    ) {
+        productService.update(id, productDTO);
+        return ok(productDTO);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

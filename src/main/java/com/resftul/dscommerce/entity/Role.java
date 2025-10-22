@@ -13,29 +13,19 @@ import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.NONE;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "tb_roles")
-public class Roles implements GrantedAuthority {
+@Table(name = "tb_role")
+public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String authority;
-
-    @ManyToMany(mappedBy = "roles")
-    @Setter(NONE)
-    private Set<Users> users = new HashSet<>();
-
-    public Roles(Long roleId, String authority) {
-        this.id = roleId;
-        this.authority = authority;
-    }
 
     @Override
     public final boolean equals(Object o) {
@@ -44,8 +34,8 @@ public class Roles implements GrantedAuthority {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Roles roles = (Roles) o;
-        return getId() != null && Objects.equals(getId(), roles.getId());
+        Role role = (Role) o;
+        return getId() != null && Objects.equals(getId(), role.getId());
     }
 
     @Override

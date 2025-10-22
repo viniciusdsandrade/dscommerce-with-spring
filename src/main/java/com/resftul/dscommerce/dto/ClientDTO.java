@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.dto;
 
-import com.resftul.dscommerce.entity.Users;
+import com.resftul.dscommerce.entity.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ public class ClientDTO {
     private Long id;
     private String name;
 
-    public ClientDTO(Users entity) {
-        id = entity.getId();
-        name = entity.getFirstName();
+    public ClientDTO(User user) {
+        id = user.getId();
+        name = user.getName();
     }
 }

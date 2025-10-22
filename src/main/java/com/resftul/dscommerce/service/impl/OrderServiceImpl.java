@@ -19,19 +19,20 @@ import static java.time.Instant.now;
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository repository;
+    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
     private final UserService userService;
     private final AuthService authService;
 
     public OrderServiceImpl(
-            OrderRepository repository,
+            OrderRepository orderRepository,
             ProductRepository productRepository,
             OrderItemRepository orderItemRepository,
-            UserService userService, AuthService authService
+            UserService userService,
+            AuthService authService
     ) {
-        this.repository = repository;
+        this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.orderItemRepository = orderItemRepository;
         this.userService = userService;
@@ -41,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
-        Order order = repository.findById(id).orElseThrow(
+        Order order = orderRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
         authService.validateSelfOrAdmin(order.getClient().getId());
         return new OrderDTO(order);
@@ -49,23 +50,23 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO insert(OrderDTO dto) {
+    public OrderDTO insert(OrderDTO orderDTO) {
 
         Order order = new Order();
 
         order.setMoment(now());
         order.setStatus(WAITING_PAYMENT);
 
-        Users users = userService.authenticated();
-        order.setClient(users);
+        User user = userService.authenticated();
+        order.setClient(user);
 
-        for (OrderItemDTO itemDto : dto.getItems()) {
+        for (OrderItemDTO itemDto : orderDTO.getItems()) {
             Product product = productRepository.getReferenceById(itemDto.getProductId());
             OrderItem item = new OrderItem(order, product, itemDto.getQuantity(), product.getPrice());
             order.getItems().add(item);
         }
 
-        repository.save(order);
+        orderRepository.save(order);
         orderItemRepository.saveAll(order.getItems());
 
         return new OrderDTO(order);

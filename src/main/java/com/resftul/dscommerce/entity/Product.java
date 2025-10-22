@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.NONE;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,17 +25,10 @@ public class Product {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
-    @Column(name = "product_name")
     private String name;
-
-    @Column(name = "product_description", columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "product_price")
     private Double price;
-
-    @Column(name = "product_img_url")
+    @Column(columnDefinition = "TEXT")
+    private String description;
     private String imgUrl;
 
     @ManyToMany
@@ -45,11 +37,9 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    @Setter(NONE)
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "id.product")
-    @Setter(NONE)
     private Set<OrderItem> items = new HashSet<>();
 
     public Product(

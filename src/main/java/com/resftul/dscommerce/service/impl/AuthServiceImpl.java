@@ -1,6 +1,6 @@
 package com.resftul.dscommerce.service.impl;
 
-import com.resftul.dscommerce.entity.Users;
+import com.resftul.dscommerce.entity.User;
 import com.resftul.dscommerce.service.AuthService;
 import com.resftul.dscommerce.service.UserService;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,7 +19,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void validateSelfOrAdmin(Long userId) {
-        Users me = userService.authenticated();
+        User me = userService.authenticated();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth != null && auth.getAuthorities().stream()

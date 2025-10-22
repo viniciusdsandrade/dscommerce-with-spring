@@ -28,10 +28,10 @@ public class ProductMinDTO {
         this.imgUrl = imgUrl;
     }
 
-    public ProductMinDTO(Product entity) {
-        id = entity.getId();
-        name = entity.getName();
-        price = entity.getPrice();
-        imgUrl = entity.getImgUrl();
+    public ProductMinDTO(Product product) {
+        id = product.getId();
+        name = product.getName();
+        price = product.getPrice();
+        imgUrl = product.getImgUrl();
     }
 }

@@ -2,9 +2,8 @@ package com.resftul.dscommerce.service.impl;
 
 import com.resftul.dscommerce.dto.user.UserDTO;
 import com.resftul.dscommerce.dto.user.UserInsertDTO;
-import com.resftul.dscommerce.dto.user.UserUpdateDTO;
-import com.resftul.dscommerce.entity.Roles;
-import com.resftul.dscommerce.entity.Users;
+import com.resftul.dscommerce.entity.Role;
+import com.resftul.dscommerce.entity.User;
 import com.resftul.dscommerce.exception.DuplicateEntryException;
 import com.resftul.dscommerce.exception.ResourceNotFoundException;
 import com.resftul.dscommerce.projections.UserDetailsProjection;
@@ -18,116 +17,115 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 import static java.util.Locale.ROOT;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private static final Long ROLE_CLIENT_ID = 2L;
+    private static final String ROLE_CLIENT_AUTHORITY = "ROLE_CLIENT";
 
-    private final PasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     public UserServiceImpl(
-            PasswordEncoder bcryptpasswordencoder,
+            PasswordEncoder passwordEncoder,
             UserRepository userRepository,
             RoleRepository roleRepository
     ) {
-        this.bCryptPasswordEncoder = bcryptpasswordencoder;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository   = userRepository;
+        this.roleRepository   = roleRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<UserDetailsProjection> results = userRepository.searchUserAndRolesByEmail(username);
-        if (results.isEmpty())
-            throw new UsernameNotFoundException("Email not found: " + username);
-        Users users = new Users();
-        users.setEmail(results.get(0).getUsername());
-        users.setPassword(results.get(0).getPassword());
-        results.forEach(projection -> users.addRole(
-                new Roles(projection.getRoleId(), projection.getAuthority())
-        ));
-        return users;
+        if (results.isEmpty()) throw new UsernameNotFoundException("Email not found: " + username);
+
+        User user = new User();
+        user.setEmail(results.get(0).getUsername());
+        user.setPassword(results.get(0).getPassword());
+        results.forEach(p -> user.addRole(new Role(p.getRoleId(), p.getAuthority())));
+        return user;
     }
 
     @Override
     public Page<UserDTO> findAllPaged(Pageable pageable) {
-        Page<Users> list = userRepository.findAll(pageable);
-        return list.map(UserDTO::new);
+        return userRepository.findAll(pageable).map(UserDTO::new);
     }
 
     @Override
     public UserDTO findById(Long id) {
-        Users users = userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return new UserDTO(users);
+        return new UserDTO(user);
     }
 
-    @Override
     @Transactional
-    public UserDTO insert(@Valid UserInsertDTO dto) {
-        final String normalizedEmail = dto.email().trim().toLowerCase();
+    @Override
+    public UserDTO insert(@Valid UserInsertDTO userInsertDTO) {
+        final String normalizedEmail = normalizeEmail(userInsertDTO.email());
 
         if (userRepository.findByEmail(normalizedEmail).isPresent())
             throw new DuplicateEntryException("Email already exists: " + normalizedEmail);
 
         try {
-            Users entity = new Users();
-            entity.initializeProfile(
-                    dto.firstName(),
-                    dto.lastName(),
-                    normalizedEmail,
-                    bCryptPasswordEncoder.encode(dto.password())
-            );
+            User entity = new User();
+            entity.setName(userInsertDTO.name());
+            entity.setEmail(normalizedEmail);
+            entity.setPhone(userInsertDTO.phone());
+            entity.setBirthDate(userInsertDTO.birthDate());
+            entity.setPassword(passwordEncoder.encode(userInsertDTO.password())); // senhas sempre codificadas
 
+            Role client = roleRepository.findByAuthority(ROLE_CLIENT_AUTHORITY)
+                    .orElseThrow(() -> new ResourceNotFoundException("Default role not found: " + ROLE_CLIENT_AUTHORITY));
             entity.getRoles().clear();
-            entity.getRoles().add(roleRepository.getReferenceById(ROLE_CLIENT_ID));
+            entity.getRoles().add(client);
 
-            userRepository.saveAndFlush(entity);
+            userRepository.save(entity);
             return new UserDTO(entity);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException("Email already exists: " + normalizedEmail);
         }
     }
 
+//    @Override
+//    @Transactional
+//    public UserDTO update(final Long id, final UserUpdateDTO dto) {
+//        final User entity = userRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//
+//        final Authentication auth = requireAuthenticated();
+//        final String requester = resolveRequesterIdentity(auth);
+//        assertOwner(entity, requester);
+//
+//        final String normalizedEmail = normalizeEmail(dto.email());
+//
+//        validateEmailChange(entity, normalizedEmail, id);
+//
+//        entity.setName(dto.name());
+//        entity.setEmail(normalizedEmail);
+//        entity.setPhone(dto.phone());
+//        entity.setBirthDate(dto.birthDate());
+//
+//        userRepository.save(entity);
+//        return new UserDTO(entity);
+//    }
+
     @Override
-    @Transactional
-    public UserDTO update(final Long id, final UserUpdateDTO dto) {
-        final Users entity = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        final Authentication auth = requireAuthenticated();
-        final String requester = resolveRequesterIdentity(auth);
-
-        assertOwner(entity, requester);
-
-        final String normalizedEmail = normalizeEmail(dto.email());
-
-        validateEmailChange(entity, normalizedEmail, id);
-
-        entity.updateProfile(dto.firstName(), dto.lastName(), normalizedEmail);
-        userRepository.save(entity);
-
-        return new UserDTO(entity);
-    }
-
-    @Override
-    public Users authenticated() {
+    public User authenticated() {
         final Authentication auth = requireAuthenticated();
         final String requester = resolveRequesterIdentity(auth);
         return userRepository.findByEmail(requester)
@@ -138,10 +136,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO getMe() {
         final Authentication auth = requireAuthenticated();
         final String requester = resolveRequesterIdentity(auth);
-
-        final Users entity = userRepository.findByEmail(requester)
+        final User entity = userRepository.findByEmail(requester)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
         return new UserDTO(entity);
     }
 
@@ -160,11 +156,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return auth.getName();
     }
 
-    private void assertOwner(Users entity, String requesterIdentity) {
-        String ownerEmail = entity.getEmail();
-        boolean isOwner = ownerEmail != null
-                && ownerEmail.equalsIgnoreCase(requesterIdentity);
-
+    private void assertOwner(User user, String requesterIdentity) {
+        String ownerEmail = user.getEmail();
+        boolean isOwner = ownerEmail != null && ownerEmail.equalsIgnoreCase(requesterIdentity);
         if (!isOwner) throw new AccessDeniedException("You are not allowed to update this user");
     }
 
@@ -173,7 +167,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return raw.trim().toLowerCase(ROOT);
     }
 
-    private void validateEmailChange(Users entity, String newEmail, Long id) {
+    private void validateEmailChange(User entity, String newEmail, Long id) {
         if (entity.getEmail() != null && entity.getEmail().equalsIgnoreCase(newEmail))
             throw new DuplicateEntryException("New email must be different from current");
         if (userRepository.existsByEmailIgnoreCaseAndIdNot(newEmail, id))

@@ -24,9 +24,7 @@ public class Payment {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(name = "payment_moment",
-            nullable = false,
-            columnDefinition = "TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant moment;
 
     @OneToOne

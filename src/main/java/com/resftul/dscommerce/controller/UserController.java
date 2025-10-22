@@ -2,7 +2,6 @@ package com.resftul.dscommerce.controller;
 
 import com.resftul.dscommerce.dto.user.UserDTO;
 import com.resftul.dscommerce.dto.user.UserInsertDTO;
-import com.resftul.dscommerce.dto.user.UserUpdateDTO;
 import com.resftul.dscommerce.service.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
@@ -64,13 +63,13 @@ public class UserController {
         return created(uri).body(createdUser);
     }
 
-    @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @PermitAll
-    public ResponseEntity<UserDTO> updateUser(
-            @PathVariable Long id,
-            @Valid @RequestBody UserUpdateDTO userInsertDTO
-    ) {
-        UserDTO updatedUser = userService.update(id, userInsertDTO);
-        return ok(updatedUser);
-    }
+//    @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+//    @PermitAll
+//    public ResponseEntity<UserDTO> updateUser(
+//            @PathVariable Long id,
+//            @Valid @RequestBody UserUpdateDTO userInsertDTO
+//    ) {
+//        UserDTO updatedUser = userService.update(id, userInsertDTO);
+//        return ok(updatedUser);
+//    }
 }

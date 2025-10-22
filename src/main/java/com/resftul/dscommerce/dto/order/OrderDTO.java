@@ -31,13 +31,13 @@ public class OrderDTO {
     @Setter(NONE)
     private List<OrderItemDTO> items = new ArrayList<>();
 
-    public OrderDTO(Order entity) {
-        this.id = entity.getId();
-        this.moment = entity.getMoment();
-        this.status = entity.getStatus();
-        this.client = new ClientDTO(entity.getClient());
-        this.payment = (entity.getPayment() == null) ? null : new PaymentDTO(entity.getPayment());
-        for (OrderItem item : entity.getItems()) {
+    public OrderDTO(Order order) {
+        this.id = order.getId();
+        this.moment = order.getMoment();
+        this.status = order.getStatus();
+        this.client = new ClientDTO(order.getClient());
+        this.payment = (order.getPayment() == null) ? null : new PaymentDTO(order.getPayment());
+        for (OrderItem item : order.getItems()) {
             OrderItemDTO itemDto = new OrderItemDTO(item);
             items.add(itemDto);
         }

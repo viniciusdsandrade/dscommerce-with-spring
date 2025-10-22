@@ -10,15 +10,15 @@ import java.util.List;
 
 @Service("categoryService")
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryRepository repository;
+    private final CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository repository) {
-        this.repository = repository;
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public List<CategoryDTO> findAll() {
-        List<Category> result = repository.findAll();
+        List<Category> result = categoryRepository.findAll();
         return result.stream()
                 .map(CategoryDTO::new)
                 .toList();

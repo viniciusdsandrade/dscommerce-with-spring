@@ -22,23 +22,23 @@ import static org.springframework.http.ResponseEntity.created;
 @RequestMapping(value = { "/orders"})
 public class OrderController {
 
-    private final OrderService service;
+    private final OrderService orderService;
 
-    public OrderController(OrderService service) {
-        this.service = service;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
-        OrderDTO dto = service.findById(id);
+        OrderDTO dto = orderService.findById(id);
         return ok(dto);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping
-    public ResponseEntity<OrderDTO> insert(@Valid @RequestBody OrderDTO dto) {
-        OrderDTO saved = service.insert(dto);
+    public ResponseEntity<OrderDTO> insert(@Valid @RequestBody OrderDTO orderDTO) {
+        OrderDTO saved = orderService.insert(orderDTO);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

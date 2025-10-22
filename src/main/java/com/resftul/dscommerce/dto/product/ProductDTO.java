@@ -1,5 +1,7 @@
-package com.resftul.dscommerce.dto;
+package com.resftul.dscommerce.dto.product;
 
+import com.resftul.dscommerce.dto.CategoryDTO;
+import com.resftul.dscommerce.entity.Category;
 import com.resftul.dscommerce.entity.Product;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +9,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -29,13 +34,19 @@ public class ProductDTO {
     private Double price;
 
     @URL(message = "Invalid URL")
-    private String imageUrl;
+    private String imgUrl;
 
-    public ProductDTO(Product product) {
-        this.id = product.getId();
-        this.name = product.getName();
-        this.description = product.getDescription();
-        this.price = product.getPrice();
-        this.imageUrl = product.getImgUrl();
+    @NotEmpty(message = "Deve ter pelo menos uma categoria")
+    private List<CategoryDTO> categories = new ArrayList<>();
+
+    public ProductDTO(Product entity) {
+        id = entity.getId();
+        name = entity.getName();
+        description = entity.getDescription();
+        price = entity.getPrice();
+        imgUrl = entity.getImgUrl();
+        for (Category cat : entity.getCategories()) {
+            categories.add(new CategoryDTO(cat));
+        }
     }
 }

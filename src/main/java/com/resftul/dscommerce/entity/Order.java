@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @AllArgsConstructor
@@ -29,19 +28,13 @@ public class Order {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(
-            name = "order_moment",
-            nullable = false,
-            columnDefinition = "TIMESTAMP"
-    )
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant moment;
-
-    @Enumerated(STRING)
     private OrderStatus status;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private Users client;
+    private User client;
 
     @OneToOne(mappedBy = "order", cascade = ALL)
     private Payment payment;

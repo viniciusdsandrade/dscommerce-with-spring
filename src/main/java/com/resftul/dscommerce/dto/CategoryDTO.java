@@ -12,8 +12,8 @@ public class CategoryDTO {
     private Long id;
     private String name;
 
-    public CategoryDTO(Category entity) {
-        id = entity.getId();
-        name = entity.getName();
+    public CategoryDTO(Category category) {
+        id = category.getId();
+        name = category.getName();
     }
 }

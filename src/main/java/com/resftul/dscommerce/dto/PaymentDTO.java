@@ -15,8 +15,8 @@ public class PaymentDTO {
     private Long id;
     private Instant moment;
 
-    public PaymentDTO(Payment entity) {
-        id = entity.getId();
-        moment = entity.getMoment();
+    public PaymentDTO(Payment payment) {
+        id = payment.getId();
+        moment = payment.getMoment();
     }
 }

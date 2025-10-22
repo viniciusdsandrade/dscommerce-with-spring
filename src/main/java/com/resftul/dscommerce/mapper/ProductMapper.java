@@ -1,27 +1,40 @@
 package com.resftul.dscommerce.mapper;
 
-import com.resftul.dscommerce.dto.ProductDTO;
+import com.resftul.dscommerce.dto.product.ProductDTO;
 import com.resftul.dscommerce.entity.Product;
+import com.resftul.dscommerce.repository.CategoryRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
 
-    public static ProductDTO mapToProductDTO(Product product) {
-        return new ProductDTO(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getImgUrl()
-        );
+    private final CategoryRepository categoryRepository;
+
+    public ProductMapper(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
-    
-    public static Product mapToProduct(ProductDTO productDTO) {
-        return new Product(
-                productDTO.getId(),
-                productDTO.getName(),
-                productDTO.getDescription(),
-                productDTO.getPrice(),
-                productDTO.getImageUrl()
-        );
+
+    public Product mapToProduct(ProductDTO dto) {
+        Product p = new Product();
+        copyToEntity(dto, p);
+        return p;
+    }
+
+    public void copyToEntity(ProductDTO dto, Product entity) {
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setPrice(dto.getPrice());
+        entity.setImgUrl(dto.getImgUrl());
+
+        entity.getCategories().clear();
+        if (dto.getCategories() != null) {
+            dto.getCategories().forEach(id ->
+                    entity.getCategories().add(categoryRepository.getReferenceById(id.getId()))
+            );
+        }
+    }
+
+    public ProductDTO mapToProductDTO(Product entity) {
+        return new ProductDTO(entity);
     }
 }
