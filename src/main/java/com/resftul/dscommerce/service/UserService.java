@@ -3,7 +3,6 @@ package com.resftul.dscommerce.service;
 
 import com.resftul.dscommerce.dto.user.UserDTO;
 import com.resftul.dscommerce.dto.user.UserInsertDTO;
-import com.resftul.dscommerce.dto.user.UserUpdateDTO;
 import com.resftul.dscommerce.entity.User;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

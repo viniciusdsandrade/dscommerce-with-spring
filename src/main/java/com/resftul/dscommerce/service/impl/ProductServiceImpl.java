@@ -30,13 +30,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO insert(ProductDTO dto) {
-        if (repository.existsByNameAndDescription(dto.getName(), dto.getDescription())) {
+    public ProductDTO insert(ProductDTO productDTO) {
+        if (repository.existsByNameAndDescription(productDTO.getName(), productDTO.getDescription())) {
             throw new ProductAlreadyExistsException("Um produto com o mesmo nome e descrição já existe.");
         }
 
         Product entity = new Product();
-        mapper.copyToEntity(dto, entity);
+        mapper.copyToEntity(productDTO, entity);
         Product saved = repository.save(entity);
 
         return new ProductDTO(saved);
@@ -76,11 +76,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO update(Long id, ProductDTO dto) {
+    public ProductDTO update(Long id, ProductDTO productDTO) {
         Product entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
 
-        mapper.copyToEntity(dto, entity);   // atualiza campos e reposiciona categorias
+        mapper.copyToEntity(productDTO, entity);
         Product updated = repository.save(entity);
 
         return new ProductDTO(updated);

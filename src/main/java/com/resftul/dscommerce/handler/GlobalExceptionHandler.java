@@ -22,7 +22,6 @@ import static org.springframework.http.HttpStatus.*;
 @Schema(description = "Classe responsável por tratar exceções globalmente na aplicação.")
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(BadRequestException.class)
     @Schema(description = "Manipula a exceção BadRequestException, lançada quando uma requisição malformada é recebida.")
     public ResponseEntity<List<ErrorDetails>> handleBadRequestException(

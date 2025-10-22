@@ -62,7 +62,12 @@ public class OrderServiceImpl implements OrderService {
 
         for (OrderItemDTO itemDto : orderDTO.getItems()) {
             Product product = productRepository.getReferenceById(itemDto.getProductId());
-            OrderItem item = new OrderItem(order, product, itemDto.getQuantity(), product.getPrice());
+            OrderItem item = new OrderItem(
+                    order,
+                    product,
+                    itemDto.getQuantity(),
+                    product.getPrice()
+            );
             order.getItems().add(item);
         }
 

@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.NONE;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,9 +38,11 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    @Setter(NONE)
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "id.product")
+    @Setter(NONE)
     private Set<OrderItem> items = new HashSet<>();
 
     public Product(

@@ -11,7 +11,6 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 public class PaymentDTO {
-
     private Long id;
     private Instant moment;
 

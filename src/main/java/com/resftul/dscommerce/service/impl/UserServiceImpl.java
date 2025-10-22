@@ -15,7 +15,6 @@ import jakarta.validation.ValidationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -87,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             entity.setEmail(normalizedEmail);
             entity.setPhone(userInsertDTO.phone());
             entity.setBirthDate(userInsertDTO.birthDate());
-            entity.setPassword(passwordEncoder.encode(userInsertDTO.password())); // senhas sempre codificadas
+            entity.setPassword(passwordEncoder.encode(userInsertDTO.password()));
 
             Role client = roleRepository.findByAuthority(ROLE_CLIENT_AUTHORITY)
                     .orElseThrow(() -> new ResourceNotFoundException("Default role not found: " + ROLE_CLIENT_AUTHORITY));
@@ -100,29 +99,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new DuplicateEntryException("Email already exists: " + normalizedEmail);
         }
     }
-
-//    @Override
-//    @Transactional
-//    public UserDTO update(final Long id, final UserUpdateDTO dto) {
-//        final User entity = userRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-//
-//        final Authentication auth = requireAuthenticated();
-//        final String requester = resolveRequesterIdentity(auth);
-//        assertOwner(entity, requester);
-//
-//        final String normalizedEmail = normalizeEmail(dto.email());
-//
-//        validateEmailChange(entity, normalizedEmail, id);
-//
-//        entity.setName(dto.name());
-//        entity.setEmail(normalizedEmail);
-//        entity.setPhone(dto.phone());
-//        entity.setBirthDate(dto.birthDate());
-//
-//        userRepository.save(entity);
-//        return new UserDTO(entity);
-//    }
 
     @Override
     public User authenticated() {
@@ -156,21 +132,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return auth.getName();
     }
 
-    private void assertOwner(User user, String requesterIdentity) {
-        String ownerEmail = user.getEmail();
-        boolean isOwner = ownerEmail != null && ownerEmail.equalsIgnoreCase(requesterIdentity);
-        if (!isOwner) throw new AccessDeniedException("You are not allowed to update this user");
-    }
-
     private String normalizeEmail(String raw) {
         if (raw == null) throw new ValidationException("Email must not be null");
         return raw.trim().toLowerCase(ROOT);
-    }
-
-    private void validateEmailChange(User entity, String newEmail, Long id) {
-        if (entity.getEmail() != null && entity.getEmail().equalsIgnoreCase(newEmail))
-            throw new DuplicateEntryException("New email must be different from current");
-        if (userRepository.existsByEmailIgnoreCaseAndIdNot(newEmail, id))
-            throw new DuplicateEntryException("Email already exists: " + newEmail);
     }
 }

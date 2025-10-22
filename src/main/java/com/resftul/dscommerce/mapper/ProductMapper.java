@@ -14,12 +14,6 @@ public class ProductMapper {
         this.categoryRepository = categoryRepository;
     }
 
-    public Product mapToProduct(ProductDTO dto) {
-        Product p = new Product();
-        copyToEntity(dto, p);
-        return p;
-    }
-
     public void copyToEntity(ProductDTO dto, Product entity) {
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
@@ -32,9 +26,5 @@ public class ProductMapper {
                     entity.getCategories().add(categoryRepository.getReferenceById(id.getId()))
             );
         }
-    }
-
-    public ProductDTO mapToProductDTO(Product entity) {
-        return new ProductDTO(entity);
     }
 }

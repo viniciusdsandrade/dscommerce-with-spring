@@ -62,14 +62,4 @@ public class UserController {
                 .toUri();
         return created(uri).body(createdUser);
     }
-
-//    @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-//    @PermitAll
-//    public ResponseEntity<UserDTO> updateUser(
-//            @PathVariable Long id,
-//            @Valid @RequestBody UserUpdateDTO userInsertDTO
-//    ) {
-//        UserDTO updatedUser = userService.update(id, userInsertDTO);
-//        return ok(updatedUser);
-//    }
 }

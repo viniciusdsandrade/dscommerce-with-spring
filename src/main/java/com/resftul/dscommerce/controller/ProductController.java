@@ -17,7 +17,7 @@ import java.net.URI;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping({"/api/v1/product", "/products"})
+@RequestMapping({ "/products"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 

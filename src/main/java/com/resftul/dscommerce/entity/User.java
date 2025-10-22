@@ -38,6 +38,7 @@ public class User implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "client")
+    @Setter(NONE)
     private List<Order> orders = new ArrayList<>();
 
     @ManyToMany(fetch = LAZY)
