@@ -1,5 +1,6 @@
 package com.resftul.dscommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.resftul.dscommerce.entity.Category;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,5 +16,10 @@ public class CategoryDTO {
     public CategoryDTO(Category category) {
         id = category.getId();
         name = category.getName();
+    }
+
+    @JsonValue
+    public String getName() {
+        return name;
     }
 }
