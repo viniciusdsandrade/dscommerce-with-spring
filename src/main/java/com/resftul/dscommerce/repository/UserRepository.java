@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
-
     Optional<User> findByEmail(String email);
 
     @Query(value = """

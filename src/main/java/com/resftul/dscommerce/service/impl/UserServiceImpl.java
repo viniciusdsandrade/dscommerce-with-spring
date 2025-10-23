@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 import static java.util.Locale.ROOT;
 
 @Service
@@ -44,8 +45,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             RoleRepository roleRepository
     ) {
         this.passwordEncoder = passwordEncoder;
-        this.userRepository   = userRepository;
-        this.roleRepository   = roleRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -53,9 +54,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         List<UserDetailsProjection> results = userRepository.searchUserAndRolesByEmail(username);
         if (results.isEmpty()) throw new UsernameNotFoundException("Email not found: " + username);
 
-        User user = new User();
-        user.setEmail(results.get(0).getUsername());
-        user.setPassword(results.get(0).getPassword());
+        var first = results.getFirst();
+        User user = new User(first.getUsername(), first.getPassword());
         results.forEach(p -> user.addRole(new Role(p.getRoleId(), p.getAuthority())));
         return user;
     }
@@ -81,12 +81,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new DuplicateEntryException("Email already exists: " + normalizedEmail);
 
         try {
-            User entity = new User();
-            entity.setName(userInsertDTO.name());
-            entity.setEmail(normalizedEmail);
-            entity.setPhone(userInsertDTO.phone());
-            entity.setBirthDate(userInsertDTO.birthDate());
-            entity.setPassword(passwordEncoder.encode(userInsertDTO.password()));
+            final String passwordEncoded = passwordEncoder.encode(userInsertDTO.password());
+
+            User entity = new User(
+                    userInsertDTO.name(),
+                    normalizedEmail,
+                    userInsertDTO.phone(),
+                    userInsertDTO.birthDate(),
+                    passwordEncoded
+            );
 
             Role client = roleRepository.findByAuthority(ROLE_CLIENT_AUTHORITY)
                     .orElseThrow(() -> new ResourceNotFoundException("Default role not found: " + ROLE_CLIENT_AUTHORITY));

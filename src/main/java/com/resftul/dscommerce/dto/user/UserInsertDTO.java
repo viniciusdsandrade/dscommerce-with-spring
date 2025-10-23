@@ -1,6 +1,8 @@
 package com.resftul.dscommerce.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.resftul.dscommerce.config.MultiFormatLocalDateDeserializer;
 import com.resftul.dscommerce.validation.annotation.StrongPassword;
 import jakarta.validation.constraints.*;
 
@@ -9,26 +11,30 @@ import java.time.LocalDate;
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
 public record UserInsertDTO(
-        @NotBlank(message = "First name is required")
-        @Size(min = 2, max = 60, message = "First name must be between 2 and 60 characters")
-        @Pattern(regexp = "^[\\p{L} .'-]{2,60}$", message = "First name contains invalid characters")
+        @NotBlank(message = "Nome é obrigatório")
+        @Size(min = 2, max = 60, message = "Nome deve ter entre 2 e 60 caracteres")
+        @Pattern(regexp = "^[\\p{L} .'-]{2,60}$", message = "Nome contém caracteres inválidos")
         String name,
 
-        @NotBlank(message = "Email is required")
-        @Email(message = "Email must be valid")
-        @Size(max = 120, message = "Email must be at most 120 characters")
+        @NotBlank(message = "Email é obrigatório")
+        @Email(message = "Email inválido")
+        @Size(max = 120, message = "Email deve ter no máximo 120 caracteres")
         String email,
 
-        @NotBlank @Size(min = 8, max = 30)
+        @NotBlank(message = "Telefone é obrigatório")
+        @Size(min = 8, max = 30, message = "Telefone deve ter entre 8 e 30 caracteres")
+        @Pattern(regexp = "^\\+?[1-9]\\d{7,14}$", message = "Phone must be a valid international number (E.164)")
         String phone,
 
-        @NotBlank(message = "Password is required")
-        @Size(min = 6, max = 60, message = "Password must be between 6 and 60 characters")
+        @NotBlank(message = "Senha é obrigatória")
+        @Size(min = 8, max = 60, message = "Senha deve ter entre 8 e 60 caracteres")
         @JsonProperty(access = WRITE_ONLY)
-        @StrongPassword()
+        @StrongPassword(message = "Senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial")
         String password,
 
-        @NotNull @Past
+        @NotNull(message = "Data de nascimento é obrigatória")
+        @Past(message = "Data de nascimento deve ser uma data no passado")
+        @JsonDeserialize(using = MultiFormatLocalDateDeserializer.class)
         LocalDate birthDate
 ) {
 }
