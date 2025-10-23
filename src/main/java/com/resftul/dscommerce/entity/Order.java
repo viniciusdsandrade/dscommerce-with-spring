@@ -55,14 +55,24 @@ public class Order {
         this.items = order.items;
     }
 
+    public Order(User client, Instant moment, OrderStatus status) {
+        this.client = client;
+        this.moment = moment;
+        this.status = status;
+    }
+
+    public void addItem(OrderItem item) {
+        this.items.add(item);
+    }
+
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        Class<?> oEffectiveClass = obj instanceof HibernateProxy ? ((HibernateProxy) obj).getHibernateLazyInitializer().getPersistentClass() : obj.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Order order = (Order) o;
+        Order order = (Order) obj;
         return getId() != null && Objects.equals(getId(), order.getId());
     }
 

@@ -17,7 +17,13 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @Setter
 @Entity
-@Table(name = "tb_role")
+@Table(
+        name = "tb_role",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_tb_role_authority",
+                columnNames = "authority"
+        )
+)
 public class Role implements GrantedAuthority {
 
     @Id
@@ -26,13 +32,13 @@ public class Role implements GrantedAuthority {
     private String authority;
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        Class<?> oEffectiveClass = obj instanceof HibernateProxy ? ((HibernateProxy) obj).getHibernateLazyInitializer().getPersistentClass() : obj.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Role role = (Role) o;
+        Role role = (Role) obj;
         return getId() != null && Objects.equals(getId(), role.getId());
     }
 

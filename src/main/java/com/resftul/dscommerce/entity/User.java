@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Consumer;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -23,15 +22,19 @@ import static lombok.AccessLevel.NONE;
 @Getter
 @Setter
 @Entity(name = "User")
-@Table(name = "tb_user")
+@Table(
+        name = "tb_user",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_tb_user_email",
+                columnNames = "email"
+        )
+)
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
-
-    @Column(unique = true)
     private String email;
     private String phone;
     private LocalDate birthDate;
@@ -51,33 +54,27 @@ public class User implements UserDetails {
     @BatchSize(size = 50)
     private Set<Role> roles = new HashSet<>();
 
-    public void initializeProfile(String name, String normalizedEmail, String passwordHash) {
-        this.name = requireNonBlank(name, "name");
-        this.email = requireNonBlank(normalizedEmail, "email");
-        this.password = requireNonBlank(passwordHash, "passwordHash");
+    public User(
+            String name,
+            String email,
+            String phone,
+            LocalDate birthDate,
+            String encodedPassword
+    ) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.password = encodedPassword;
     }
 
-    public void updateProfile(String firstName, String normalizedEmail) {
-        applyIfPresent(firstName, "name", v -> this.name = v);
-        applyIfPresent(normalizedEmail, "email", v -> this.email = v);
+    public User(String email, String encodedPassword) {
+        this.email = email;
+        this.password = encodedPassword;
     }
 
-    private static String requireNonBlank(String v, String field) {
-        if (v == null) throw new IllegalArgumentException(field + " required");
-        v = v.strip();
-        if (v.isEmpty()) throw new IllegalArgumentException(field + " blank");
-        return v;
-    }
-
-    private static void applyIfPresent(String value, String field, Consumer<String> apply) {
-        if (value == null) return;
-        String v = value.strip();
-        if (v.isEmpty()) throw new IllegalArgumentException(field + " blank");
-        apply.accept(v);
-    }
-
-    public void addRole(Role referenceById) {
-        this.roles.add(referenceById);
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 
     @Override
@@ -111,13 +108,13 @@ public class User implements UserDetails {
     }
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        Class<?> oEffectiveClass = obj instanceof HibernateProxy ? ((HibernateProxy) obj).getHibernateLazyInitializer().getPersistentClass() : obj.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        User user = (User) o;
+        User user = (User) obj;
         return getId() != null && Objects.equals(getId(), user.getId());
     }
 

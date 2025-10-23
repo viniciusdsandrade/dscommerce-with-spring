@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -21,11 +22,12 @@ public class OrderItem {
     private OrderItemPK id = new OrderItemPK();
 
     private Integer quantity;
-    private Double price;
+    private BigDecimal price;
 
     public Order getOrder() {
         return id.getOrder();
     }
+
     public Product getProduct() {
         return id.getProduct();
     }
@@ -34,7 +36,7 @@ public class OrderItem {
             Order order,
             Product product,
             Integer quantity,
-            Double price
+            BigDecimal price
     ) {
         id.setOrder(order);
         id.setProduct(product);
@@ -43,13 +45,13 @@ public class OrderItem {
     }
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        Class<?> oEffectiveClass = obj instanceof HibernateProxy ? ((HibernateProxy) obj).getHibernateLazyInitializer().getPersistentClass() : obj.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        OrderItem orderItem = (OrderItem) o;
+        OrderItem orderItem = (OrderItem) obj;
         return getId() != null && Objects.equals(getId(), orderItem.getId());
     }
 
