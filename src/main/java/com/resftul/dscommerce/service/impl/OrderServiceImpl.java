@@ -13,6 +13,9 @@ import com.resftul.dscommerce.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.resftul.dscommerce.entity.OrderStatus.WAITING_PAYMENT;
 import static java.time.Instant.now;
 
@@ -51,14 +54,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDTO insert(OrderDTO orderDTO) {
-
-        Order order = new Order();
-
-        order.setMoment(now());
-        order.setStatus(WAITING_PAYMENT);
-
         User user = userService.authenticated();
-        order.setClient(user);
+
+        Order order = new Order(
+                user,
+                now(),
+                WAITING_PAYMENT
+        );
 
         for (OrderItemDTO itemDto : orderDTO.getItems()) {
             Product product = productRepository.getReferenceById(itemDto.getProductId());
@@ -68,12 +70,32 @@ public class OrderServiceImpl implements OrderService {
                     itemDto.getQuantity(),
                     product.getPrice()
             );
-            order.getItems().add(item);
+            order.addItem(item);
         }
 
         orderRepository.save(order);
         orderItemRepository.saveAll(order.getItems());
 
         return new OrderDTO(order);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderDTO> listAll() {
+        User user = userService.authenticated();
+        boolean isAdmin = user
+                .getRoles()
+                .stream()
+                .anyMatch(r -> "ROLE_ADMIN".equals(r.getAuthority()));
+
+        if (!isAdmin) {
+            return new ArrayList<>(user.getOrders())
+                    .stream()
+                    .map(OrderDTO::new)
+                    .toList();
+        }
+
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(OrderDTO::new).toList();
     }
 }

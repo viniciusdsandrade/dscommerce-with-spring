@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.created;
@@ -33,6 +34,13 @@ public class OrderController {
     public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
         OrderDTO dto = orderService.findById(id);
         return ok(dto);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> listAll() {
+        List<OrderDTO> dtos = orderService.listAll();
+        return ok(dtos);
     }
 
     @PreAuthorize("hasRole('CLIENT')")

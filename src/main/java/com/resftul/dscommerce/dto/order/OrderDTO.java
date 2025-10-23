@@ -36,7 +36,9 @@ public class OrderDTO {
         this.moment = order.getMoment();
         this.status = order.getStatus();
         this.client = new ClientDTO(order.getClient());
-        this.payment = (order.getPayment() == null) ? null : new PaymentDTO(order.getPayment());
+        this.payment = (order.getPayment() == null)
+                ? null
+                : new PaymentDTO(order.getPayment());
         for (OrderItem item : order.getItems()) {
             OrderItemDTO itemDto = new OrderItemDTO(item);
             items.add(itemDto);
