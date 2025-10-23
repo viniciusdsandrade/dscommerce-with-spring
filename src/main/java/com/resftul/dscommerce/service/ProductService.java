@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
-
 public interface ProductService {
 
     @Transactional
@@ -17,12 +15,10 @@ public interface ProductService {
     @Transactional
     ProductDTO update(Long id, @Valid ProductDTO productDTO);
 
-    @Transactional(propagation = SUPPORTS)
+    @Transactional
     void delete(Long id);
 
     ProductDTO findById(Long id);
 
     Page<ProductMinDTO> findAll(String name, Pageable pageable);
-
-    Page<ProductDTO> findByName(String name, Pageable pageable);
 }

@@ -40,6 +40,7 @@ public class ProductDTO {
 
     @URL(protocol = "https", message = "Invalid URL (exigir https)")
     private String imgUrl;
+
     @NotEmpty(message = "Deve ter pelo menos uma categoria")
     private List<CategoryDTO> categories = new ArrayList<>();
 

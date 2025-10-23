@@ -52,12 +52,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> findByName(String name, Pageable pageable) {
-        return productRepository.searchByName(name, pageable)
-                .map(ProductDTO::new);
-    }
-
-    @Override
     public Page<ProductMinDTO> findAll(String name, Pageable pageable) {
         Page<Product> result = productRepository.searchByName(name, pageable);
         return result.map(ProductMinDTO::new);
