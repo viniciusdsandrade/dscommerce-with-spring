@@ -30,7 +30,7 @@ import java.util.List;
 
 import static java.util.Locale.ROOT;
 
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private static final String ROLE_CLIENT_AUTHORITY = "ROLE_CLIENT";

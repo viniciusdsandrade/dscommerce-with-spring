@@ -23,15 +23,15 @@ public class CustomPasswordAuthenticationConverter implements AuthenticationConv
 
 	@Nullable
 	@Override
-	public Authentication convert(HttpServletRequest request) {
+	public Authentication convert(HttpServletRequest httpServletRequest) {
 		
-		String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
+		String grantType = httpServletRequest.getParameter(OAuth2ParameterNames.GRANT_TYPE);
 				
 		if (!"password".equals(grantType)) {
 			return null;
 		}
 		
-		MultiValueMap<String, String> parameters = getParameters(request);
+		MultiValueMap<String, String> parameters = getParameters(httpServletRequest);
 		
 		// scope (OPTIONAL)
 		String scope = parameters.getFirst(OAuth2ParameterNames.SCOPE);
@@ -64,7 +64,7 @@ public class CustomPasswordAuthenticationConverter implements AuthenticationConv
 		parameters.forEach((key, value) -> {
 			if (!key.equals(OAuth2ParameterNames.GRANT_TYPE) &&
 					!key.equals(OAuth2ParameterNames.SCOPE)) {
-				additionalParameters.put(key, value.get(0));
+				additionalParameters.put(key, value.getFirst());
 			}
 		});
 		
@@ -72,8 +72,8 @@ public class CustomPasswordAuthenticationConverter implements AuthenticationConv
 		return new CustomPasswordAuthenticationToken(clientPrincipal, requestedScopes, additionalParameters);
 	}
 
-	private static MultiValueMap<String, String> getParameters(HttpServletRequest request) {
-		Map<String, String[]> parameterMap = request.getParameterMap();
+	private static MultiValueMap<String, String> getParameters(HttpServletRequest httpServletRequest) {
+		Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>(parameterMap.size());
 		parameterMap.forEach((key, values) -> {
             for (String value : values) {

@@ -21,7 +21,7 @@ public final class BigDecimalDeserializer extends StdDeserializer<BigDecimal> {
     }
 
     @Override
-    public BigDecimal deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
+    public BigDecimal deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         var t = jsonParser.getCurrentToken();
         return switch (t) {
             case VALUE_NUMBER_INT, VALUE_NUMBER_FLOAT -> jsonParser.getDecimalValue();
@@ -34,14 +34,19 @@ public final class BigDecimalDeserializer extends StdDeserializer<BigDecimal> {
         };
     }
 
-    private static BigDecimal parseStringToken(JsonParser p) throws IOException {
-        final String raw = p.getText();
+    private static BigDecimal parseStringToken(JsonParser jsonParser) throws IOException {
+        final String raw = jsonParser.getText();
         try {
             BigDecimal parsed = parseFlexibleDecimal(raw);
             if (parsed == null) throw new IllegalArgumentException("Preço vazio ou inválido");
             return parsed;
-        } catch (IllegalArgumentException ex) {
-            throw InvalidFormatException.from(p, ex.getMessage(), raw, BigDecimal.class);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw InvalidFormatException.from(
+                    jsonParser,
+                    illegalArgumentException.getMessage(),
+                    raw,
+                    BigDecimal.class
+            );
         }
     }
 
@@ -59,11 +64,9 @@ public final class BigDecimalDeserializer extends StdDeserializer<BigDecimal> {
     }
 
     private static String normalizeRaw(String input) {
-        String s = input.trim();
+        final String s = input.trim();
         if (s.isEmpty()) return null;
-        s = s.replace(NBSP, "");
-        s = s.replaceAll(STRIP_REGEX, "");
-        return s;
+        return s.replace(NBSP, "").replaceAll(STRIP_REGEX, "");
     }
 
     private static String normalizeNumber(String s, char decimalSep) {
@@ -116,6 +119,8 @@ public final class BigDecimalDeserializer extends StdDeserializer<BigDecimal> {
     }
 
     private static int decimalsAfter(String s, int sepIdx) {
-        return (sepIdx >= 0) ? (s.length() - sepIdx - 1) : 0;
+        return (sepIdx >= 0)
+                ? (s.length() - sepIdx - 1)
+                : 0;
     }
 }
