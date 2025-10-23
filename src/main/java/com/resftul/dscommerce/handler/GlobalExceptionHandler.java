@@ -1,5 +1,6 @@
 package com.resftul.dscommerce.handler;
 
+import com.resftul.dscommerce.exception.ProductAlreadyExistsException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
@@ -45,14 +46,16 @@ public class GlobalExceptionHandler {
             WebRequest request
     ) {
         List<ValidationErrorDetails> errors = new ArrayList<>();
-        for (FieldError error : exception.getBindingResult().getFieldErrors()) {
-            errors.add(new ValidationErrorDetails(
-                    now(),
-                    error.getDefaultMessage(),
-                    request.getDescription(false),
-                    "METHOD_ARGUMENT_NOT_VALID_ERROR",
-                    error.getField()
-            ));
+        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
+            errors.add(
+                    new ValidationErrorDetails(
+                            now(),
+                            fieldError.getDefaultMessage(),
+                            request.getDescription(false),
+                            "METHOD_ARGUMENT_NOT_VALID_ERROR",
+                            fieldError.getField()
+                    )
+            );
         }
         return ResponseEntity.status(BAD_REQUEST).body(errors);
     }
@@ -121,19 +124,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(List.of(errorDetails), INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(UnsupportedOperationException.class)
-    @Schema(description = "Manipula exceções que indicam que uma funcionalidade não está implementada.")
-    public ResponseEntity<List<ErrorDetails>> handleNotImplementedException(
-            UnsupportedOperationException exception,
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    @Schema(description = "Manipula violação de unicidade para produto já existente.")
+    public ResponseEntity<List<ErrorDetails>> handleProductAlreadyExistsException(
+            ProductAlreadyExistsException exception,
             WebRequest webRequest
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
                 exception.getMessage(),
                 webRequest.getDescription(false),
-                "NOT_IMPLEMENTED"
+                "CONFLICT"
         );
-
-        return new ResponseEntity<>(List.of(errorDetails), NOT_IMPLEMENTED);
+        return new ResponseEntity<>(List.of(errorDetails), CONFLICT);
     }
 }
