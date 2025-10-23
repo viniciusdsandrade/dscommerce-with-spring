@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("productRepository")
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
-    boolean existsByNameAndDescription(String name, String description);
+    boolean existsByName(String name);
 
     @Query("SELECT p " +
            "FROM Product p " +

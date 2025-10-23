@@ -2,6 +2,7 @@ package com.resftul.dscommerce.service;
 
 import com.resftul.dscommerce.dto.product.ProductDTO;
 import com.resftul.dscommerce.dto.product.ProductMinDTO;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +12,10 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 public interface ProductService {
 
     @Transactional
-    ProductDTO insert(ProductDTO productDTO);
+    ProductDTO insert(@Valid ProductDTO productDTO);
 
     @Transactional
-    ProductDTO update(Long id, ProductDTO productDTO);
+    ProductDTO update(Long id, @Valid ProductDTO productDTO);
 
     @Transactional(propagation = SUPPORTS)
     void delete(Long id);

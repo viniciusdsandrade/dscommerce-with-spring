@@ -1,9 +1,14 @@
 package com.resftul.dscommerce.mapper;
 
 import com.resftul.dscommerce.dto.product.ProductDTO;
+import com.resftul.dscommerce.entity.Category;
 import com.resftul.dscommerce.entity.Product;
 import com.resftul.dscommerce.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 @Component
 public class ProductMapper {
@@ -14,17 +19,20 @@ public class ProductMapper {
         this.categoryRepository = categoryRepository;
     }
 
-    public void copyToEntity(ProductDTO dto, Product entity) {
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setPrice(dto.getPrice());
-        entity.setImgUrl(dto.getImgUrl());
+    public void updateEntityFromDto(ProductDTO productDTO, Product product) {
+        Set<Category> categories = (productDTO.getCategories() == null)
+                ? null
+                : productDTO.getCategories()
+                .stream()
+                .map(c -> categoryRepository.getReferenceById(c.getId()))
+                .collect(toSet());
 
-        entity.getCategories().clear();
-        if (dto.getCategories() != null) {
-            dto.getCategories().forEach(id ->
-                    entity.getCategories().add(categoryRepository.getReferenceById(id.getId()))
-            );
-        }
+        product.replaceAttributes(
+                productDTO.getName(),
+                productDTO.getDescription(),
+                productDTO.getPrice(),
+                productDTO.getImgUrl(),
+                categories
+        );
     }
 }

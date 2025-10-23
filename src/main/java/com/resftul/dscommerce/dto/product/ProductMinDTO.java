@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @EqualsAndHashCode
 @NoArgsConstructor
 @Getter
@@ -13,7 +15,7 @@ public class ProductMinDTO {
 
     private Long id;
     private String name;
-    private Double price;
+    private BigDecimal price;
     private String imgUrl;
 
     public ProductMinDTO(Product product) {

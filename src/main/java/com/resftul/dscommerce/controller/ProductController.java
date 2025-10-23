@@ -47,13 +47,13 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO productDTO) {
-        productService.insert(productDTO);
+        ProductDTO createdDto = productService.insert(productDTO);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(productDTO.getId())
+                .buildAndExpand(createdDto.getId())
                 .toUri();
-        return created(uri).body(productDTO);
+        return created(uri).body(createdDto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -62,8 +62,8 @@ public class ProductController {
             @PathVariable Long id,
             @Valid @RequestBody ProductDTO productDTO
     ) {
-        productService.update(id, productDTO);
-        return ok(productDTO);
+        ProductDTO updatedDto = productService.update(id, productDTO);
+        return ok(updatedDto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

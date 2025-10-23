@@ -15,49 +15,51 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.lang.String.format;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
 @Service("productService")
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repository;
-    private final ProductMapper mapper;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    public ProductServiceImpl(ProductRepository repository, ProductMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
     @Override
     @Transactional
     public ProductDTO insert(ProductDTO productDTO) {
-        if (repository.existsByNameAndDescription(productDTO.getName(), productDTO.getDescription())) {
-            throw new ProductAlreadyExistsException("Um produto com o mesmo nome e descrição já existe.");
+        if (productRepository.existsByName(productDTO.getName()))
+            throw new ProductAlreadyExistsException("Já existe um produto com nome " + productDTO.getName());
+
+        try {
+            var product = new Product();
+            productMapper.updateEntityFromDto(productDTO, product);
+            return new ProductDTO(productRepository.save(product));
+        } catch (DataIntegrityViolationException e) {
+            throw new ProductAlreadyExistsException("Já existe produto com este nome.");
         }
-
-        Product entity = new Product();
-        mapper.copyToEntity(productDTO, entity);
-        Product saved = repository.save(entity);
-
-        return new ProductDTO(saved);
     }
 
     @Override
     public ProductDTO findById(Long id) {
-        Product product = repository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
         return new ProductDTO(product);
     }
 
     @Override
     public Page<ProductDTO> findByName(String name, Pageable pageable) {
-        return repository.searchByName(name, pageable)
+        return productRepository.searchByName(name, pageable)
                 .map(ProductDTO::new);
     }
 
     @Override
     public Page<ProductMinDTO> findAll(String name, Pageable pageable) {
-        Page<Product> result = repository.searchByName(name, pageable);
+        Page<Product> result = productRepository.searchByName(name, pageable);
         return result.map(ProductMinDTO::new);
     }
 
@@ -65,24 +67,31 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(propagation = SUPPORTS)
     public void delete(Long id) {
         try {
-            repository.deleteById(id);
+            productRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Product not found with id " + id);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException(
-                    String.format("Cannot delete product with id %d because it has associated orders.", id), e);
+                    format("Cannot delete product with id %d because it has associated orders.", id), e);
         }
     }
 
     @Override
     @Transactional
     public ProductDTO update(Long id, ProductDTO productDTO) {
-        Product entity = repository.findById(id)
+        Product entity = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
 
-        mapper.copyToEntity(productDTO, entity);
-        Product updated = repository.save(entity);
+        final String newName = productDTO.getName();
+        if (newName != null && !newName.equals(entity.getName()) && productRepository.existsByName(newName))
+            throw new ProductAlreadyExistsException("Já existe um produto com nome " + newName);
 
-        return new ProductDTO(updated);
+        try {
+            productMapper.updateEntityFromDto(productDTO, entity);
+            Product updated = productRepository.save(entity);
+            return new ProductDTO(updated);
+        } catch (DataIntegrityViolationException e) {
+            throw new ProductAlreadyExistsException("Já existe um produto com nome " + newName);
+        }
     }
 }
