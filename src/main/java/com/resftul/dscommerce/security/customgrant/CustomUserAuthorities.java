@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.config.customgrant;
+package com.resftul.dscommerce.security.customgrant;
 
 import java.util.Collection;
 

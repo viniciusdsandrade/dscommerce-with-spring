@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.config;
+package com.resftul.dscommerce.security;
 
 import java.util.Arrays;
 

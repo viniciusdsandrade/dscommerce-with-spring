@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.config;
+package com.resftul.dscommerce.security;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -8,9 +8,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
-import com.resftul.dscommerce.config.customgrant.CustomPasswordAuthenticationConverter;
-import com.resftul.dscommerce.config.customgrant.CustomPasswordAuthenticationProvider;
-import com.resftul.dscommerce.config.customgrant.CustomUserAuthorities;
+import com.resftul.dscommerce.security.customgrant.CustomPasswordAuthenticationConverter;
+import com.resftul.dscommerce.security.customgrant.CustomPasswordAuthenticationProvider;
+import com.resftul.dscommerce.security.customgrant.CustomUserAuthorities;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
