@@ -18,7 +18,6 @@ import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequestMapping({ "/products"})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
     private final ProductService productService;
