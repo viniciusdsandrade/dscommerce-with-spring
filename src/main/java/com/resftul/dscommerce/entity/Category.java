@@ -36,6 +36,10 @@ public class Category {
     @Setter(NONE)
     private Set<Product> products = new HashSet<>();
 
+    public Category(String name) {
+        this.name = name;
+    }
+
     @Override
     public final boolean equals(Object obj) {
         if (this == obj) return true;

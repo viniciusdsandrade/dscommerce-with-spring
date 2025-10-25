@@ -21,9 +21,9 @@ public class CategoryTest {
     }
 
     private static Category newCategory(String name) {
-        Category category = new Category();
-        category.setName(name);
-        return category;
+        return new Category(
+                name
+        );
     }
 
     @Test
