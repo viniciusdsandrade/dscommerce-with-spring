@@ -71,13 +71,15 @@ class ProductRepositoryTests {
             String img,
             Category... categories
     ) {
-        var p = new Product();
-        p.setName(name);
-        p.setDescription(desc);
-        p.setPrice(price);
-        p.setImgUrl(img);
-        for (Category c : categories) p.getCategories().add(c);
-        return testEntityManager.persistAndFlush(p);
+        var product = new Product(
+                null,
+                name,
+                desc,
+                price,
+                img
+        );
+        for (Category category : categories) product.getCategories().add(category);
+        return testEntityManager.persistAndFlush(product);
     }
 
     @Test
