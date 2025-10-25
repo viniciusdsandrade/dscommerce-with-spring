@@ -2,10 +2,12 @@ package com.resftul.dscommerce.dto;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.resftul.dscommerce.entity.Category;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @EqualsAndHashCode
 @NoArgsConstructor
 @Getter
