@@ -8,7 +8,6 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -95,10 +94,6 @@ public class Product {
         if (categories != null && !categories.isEmpty()) {
             this.categories.addAll(categories);
         }
-    }
-
-    public List<Order> getOrders() {
-        return items.stream().map(OrderItem::getOrder).toList();
     }
 
     public Product(Product product) {
