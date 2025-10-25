@@ -21,13 +21,13 @@ public class UserTest {
     }
 
     private static User newUser(String name, String email) {
-        User u = new User();
-        u.setName(name);
-        u.setEmail(email);
-        u.setPhone("9999-0000");
-        u.setBirthDate(LocalDate.of(1990, 1, 1));
-        u.setPassword("{noop}secret");
-        return u;
+        return new User(
+                name,
+                email,
+                "9999-0000",
+                LocalDate.of(1990, 1, 1),
+                "{noop}secret"
+        );
     }
 
     @Test
