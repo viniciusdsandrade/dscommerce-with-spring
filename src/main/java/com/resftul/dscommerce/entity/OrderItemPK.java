@@ -19,9 +19,4 @@ public class OrderItemPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-    public OrderItemPK(OrderItemPK orderItemPK) {
-        this.order = new Order(orderItemPK.getOrder());
-        this.product = new Product(orderItemPK.getProduct());
-    }
 }

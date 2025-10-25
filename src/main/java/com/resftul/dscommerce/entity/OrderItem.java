@@ -44,12 +44,6 @@ public class OrderItem {
         this.price = price;
     }
 
-    public OrderItem(OrderItem orderItem) {
-        this.id = new OrderItemPK();
-        this.quantity = orderItem.quantity;
-        this.price = orderItem.price;
-    }
-
     @Override
     public final boolean equals(Object obj) {
         if (this == obj) return true;
