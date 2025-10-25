@@ -11,9 +11,10 @@ public class RoleTest {
     @Test
     @DisplayName("getters/setters: preenchem e retornam id/authority")
     void getters_and_setters() {
-        Role role = new Role();
-        role.setId(10L);
-        role.setAuthority("ROLE_ADMIN");
+        Role role = new Role(
+                10L,
+                "ROLE_ADMIN"
+        );
 
         assertThat(role.getId()).isEqualTo(10L);
         assertThat(role.getAuthority()).isEqualTo("ROLE_ADMIN");
@@ -32,13 +33,15 @@ public class RoleTest {
     @Test
     @DisplayName("equals/hashCode: iguais quando id é o mesmo; reflexivo/simétrico/transitivo")
     void equals_and_hashCode_same_id() {
-        Role role1 = new Role();
-        role1.setId(1L);
-        role1.setAuthority("ROLE_X");
+        Role role1 = new Role(
+                1L,
+                "ROLE_X"
+        );
 
-        Role role2 = new Role();
-        role2.setId(1L);
-        role2.setAuthority("ROLE_Y");
+        Role role2 = new Role(
+                1L,
+                "ROLE_X"
+        );
 
         assertThat(role1).isEqualTo(role2);
         assertThat(role1.hashCode()).isEqualTo(role2.hashCode());
@@ -50,14 +53,15 @@ public class RoleTest {
     @Test
     @DisplayName("equals: diferentes quando IDs diferentes (sem impor hashCode diferente)")
     void equals_different_when_ids_different() {
-        Role role1 = new Role();
-        role1.setId(1L);
-        role1.setAuthority("ROLE_A");
+        Role role1 = new Role(
+                1L,
+                "ROLE_A"
+        );
 
-        Role role2 = new Role();
-        role2.setId(2L);
-        role2.setAuthority("ROLE_A");
-
+        Role role2 = new Role(
+                2L,
+                "ROLE_A"
+        );
         assertThat(role1).isNotEqualTo(role2);
 
         assertThat(role1.hashCode()).isEqualTo(Role.class.hashCode());
@@ -70,10 +74,10 @@ public class RoleTest {
         Role withNullId = new Role();
         withNullId.setAuthority("ROLE_X");
 
-        Role withId = new Role();
-        withId.setId(99L);
-        withId.setAuthority("ROLE_X");
-
+        Role withId = new Role(
+                99L,
+                "ROLE_X"
+        );
         assertThat(withNullId).isNotEqualTo(withId);
         Role anotherNull = new Role();
         assertThat(withNullId).isNotEqualTo(anotherNull);
@@ -82,9 +86,10 @@ public class RoleTest {
     @Test
     @DisplayName("equals: não é igual a null nem a outro tipo")
     void equals_not_equals_to_null_or_other_type() {
-        Role role = new Role();
-        role.setId(1L);
-        role.setAuthority("ROLE_X");
+        Role role = new Role(
+                1L,
+                "ROLE_X"
+        );
 
         assertThat(role).isNotEqualTo(null);
         assertThat(role.equals(new Object())).isFalse();
