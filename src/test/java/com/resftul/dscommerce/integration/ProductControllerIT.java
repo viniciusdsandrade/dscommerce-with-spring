@@ -19,7 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.hamcrest.Matchers.endsWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -116,7 +118,7 @@ public class ProductControllerIT {
                         .contentType(APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.endsWith("/products/100")))
+                .andExpect(header().string("Location", endsWith("/products/100")))
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(100))
                 .andExpect(jsonPath("$.name").value("Notebook Pro"));
