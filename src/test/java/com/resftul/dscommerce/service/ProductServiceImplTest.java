@@ -48,13 +48,13 @@ class ProductServiceImplTest {
     }
 
     private static Product entity(Long id, String name) {
-        Product p = new Product();
-        p.setId(id);
-        p.setName(name);
-        p.setDescription("desc " + name);
-        p.setPrice(new BigDecimal("123.45"));
-        p.setImgUrl("https://img");
-        return p;
+        return new Product(
+                id,
+                name,
+                "desc " + name,
+                new BigDecimal("123.45"),
+                "https://img"
+        );
     }
 
     private void stubMapperCopy() {
