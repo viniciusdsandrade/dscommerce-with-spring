@@ -35,4 +35,17 @@ public class UserDTO {
             this.roles.add(new RoleDTO(role));
         }
     }
+
+    public UserDTO(long id, String name, String email, String phone, LocalDate birthDate, RoleDTO... roles) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        if (roles != null) {
+            for (RoleDTO role : roles) {
+                if (role != null) this.roles.add(role);
+            }
+        }
+    }
 }
