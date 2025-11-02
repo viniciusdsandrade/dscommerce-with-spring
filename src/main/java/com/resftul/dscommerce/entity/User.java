@@ -105,6 +105,13 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public User(Long id, String name, String email, Role[] roles) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.roles = new HashSet<>(Arrays.asList(roles));
+    }
+
     public void addRole(Role role) {
         this.roles.add(role);
     }
