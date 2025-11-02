@@ -68,14 +68,15 @@ public class Product {
             String description,
             BigDecimal price,
             String imageUrl,
-            Set<Category> categories
+            Category... categories
     ) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.imgUrl = imageUrl;
-        if (categories != null && !categories.isEmpty()) {
-            this.categories.addAll(categories);
+        this(null, name, description, price, imageUrl);
+        if (categories != null) {
+            for (Category c : categories) {
+                if (c != null) {
+                    this.categories.add(c);
+                }
+            }
         }
     }
 
@@ -94,16 +95,6 @@ public class Product {
         if (categories != null && !categories.isEmpty()) {
             this.categories.addAll(categories);
         }
-    }
-
-    public Product(Product product) {
-        this.id = product.id;
-        this.name = product.name;
-        this.description = product.description;
-        this.price = product.price;
-        this.imgUrl = product.imgUrl;
-        this.categories = new HashSet<>(product.categories);
-        this.items = new HashSet<>(product.items);
     }
 
     @Override
