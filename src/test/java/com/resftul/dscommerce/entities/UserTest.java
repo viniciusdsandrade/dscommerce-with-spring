@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserTest {
     private static void setPrivateId(Object target, Long id) {
         try {
-            Field f = target.getClass().getDeclaredField("id");
-            f.setAccessible(true);
-            f.set(target, id);
-        } catch (ReflectiveOperationException e) {
-            throw new AssertionError("Falha ao setar id por reflexão", e);
+            Field field = target.getClass().getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(target, id);
+        } catch (ReflectiveOperationException exception) {
+            throw new AssertionError("Falha ao setar id por reflexão", exception);
         }
     }
 
@@ -33,43 +33,43 @@ public class UserTest {
     @Test
     @DisplayName("equals/hashCode: iguais quando id é o mesmo; diferentes quando id difere ou é nulo")
     void equals_hashCode_based_on_id() {
-        User a = newUser("A", "a@x.com");
-        User b = newUser("B", "b@x.com");
-        setPrivateId(a, 10L);
-        setPrivateId(b, 10L);
+        User user1 = newUser("A", "a@x.com");
+        User user2 = newUser("B", "b@x.com");
+        setPrivateId(user1, 10L);
+        setPrivateId(user2, 10L);
 
-        assertThat(a).isEqualTo(b);
-        assertThat(a.hashCode()).isEqualTo(b.hashCode());
+        assertThat(user1).isEqualTo(user2);
+        assertThat(user1.hashCode()).isEqualTo(user2.hashCode());
 
-        User c = newUser("C", "c@x.com");
-        setPrivateId(c, 11L);
-        assertThat(a).isNotEqualTo(c);
+        User user3 = newUser("C", "c@x.com");
+        setPrivateId(user3, 11L);
+        assertThat(user1).isNotEqualTo(user3);
 
         User x = newUser("X", "x@x.com");
         User y = newUser("Y", "y@x.com");
         assertThat(x).isNotEqualTo(y);
 
-        assertThat(a).isEqualTo(a);
+        assertThat(user1).isEqualTo(user1);
     }
 
     @Test
     @DisplayName("UserDetails: getUsername retorna email; flags padrões são false")
     void userDetails_contract() {
-        User u = newUser("Alice", "alice@acme.com");
+        User user = newUser("Alice", "alice@acme.com");
 
-        assertThat(u.getUsername()).isEqualTo("alice@acme.com");
+        assertThat(user.getUsername()).isEqualTo("alice@acme.com");
 
-        assertThat(u.isAccountNonExpired()).isFalse();
-        assertThat(u.isAccountNonLocked()).isFalse();
-        assertThat(u.isCredentialsNonExpired()).isFalse();
-        assertThat(u.isEnabled()).isFalse();
+        assertThat(user.isAccountNonExpired()).isFalse();
+        assertThat(user.isAccountNonLocked()).isFalse();
+        assertThat(user.isCredentialsNonExpired()).isFalse();
+        assertThat(user.isEnabled()).isFalse();
     }
 
     @Test
     @DisplayName("Coleções: orders e roles não são nulas e começam vazias")
     void collections_are_non_null_and_initially_empty() {
-        User u = newUser("Carol", "carol@acme.com");
-        assertThat(u.getOrders()).isNotNull().isEmpty();
-        assertThat(u.getRoles()).isNotNull().isEmpty();
+        User user = newUser("Carol", "carol@acme.com");
+        assertThat(user.getOrders()).isNotNull().isEmpty();
+        assertThat(user.getRoles()).isNotNull().isEmpty();
     }
 }
