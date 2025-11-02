@@ -30,7 +30,7 @@ public class Order {
 
     // @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant moment;
-    private OrderStatus status;
+    private OrderStatus orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
@@ -42,6 +42,13 @@ public class Order {
     @OneToMany(mappedBy = "id.order")
     private Set<OrderItem> items = new HashSet<>();
 
+    public Order(Long id, Instant moment, OrderStatus orderStatus, User client) {
+        this.id = id;
+        this.moment = moment;
+        this.orderStatus = orderStatus;
+        this.client = client;
+    }
+
     public List<Product> getProducts() {
         return items.stream().map(OrderItem::getProduct).toList();
     }
@@ -49,16 +56,16 @@ public class Order {
     public Order(Order order) {
         this.id = order.id;
         this.moment = order.moment;
-        this.status = order.status;
+        this.orderStatus = order.orderStatus;
         this.client = order.client;
         this.payment = order.payment;
         this.items = order.items;
     }
 
-    public Order(User client, Instant moment, OrderStatus status) {
+    public Order(User client, Instant moment, OrderStatus orderStatus) {
         this.client = client;
         this.moment = moment;
-        this.status = status;
+        this.orderStatus = orderStatus;
     }
 
     public void addItem(OrderItem item) {
