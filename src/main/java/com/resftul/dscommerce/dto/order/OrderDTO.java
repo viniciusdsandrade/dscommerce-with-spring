@@ -34,7 +34,7 @@ public class OrderDTO {
     public OrderDTO(Order order) {
         this.id = order.getId();
         this.moment = order.getMoment();
-        this.status = order.getStatus();
+        this.status = order.getOrderStatus();
         this.client = new ClientDTO(order.getClient());
         this.payment = (order.getPayment() == null)
                 ? null
