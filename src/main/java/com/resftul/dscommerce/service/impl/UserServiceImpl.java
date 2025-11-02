@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             final String passwordEncoded = passwordEncoder.encode(userInsertDTO.password());
 
-            User entity = new User(
+            User user = new User(
                     userInsertDTO.name(),
                     normalizedEmail,
                     userInsertDTO.phone(),
@@ -91,13 +91,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     passwordEncoded
             );
 
-            Role client = roleRepository.findByAuthority(ROLE_CLIENT_AUTHORITY)
+            Role role = roleRepository.findByAuthority(ROLE_CLIENT_AUTHORITY)
                     .orElseThrow(() -> new ResourceNotFoundException("Default role not found: " + ROLE_CLIENT_AUTHORITY));
-            entity.getRoles().clear();
-            entity.getRoles().add(client);
+            user.getRoles().clear();
+            user.getRoles().add(role);
 
-            userRepository.save(entity);
-            return new UserDTO(entity);
+            userRepository.save(user);
+            return new UserDTO(user);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntryException("Email already exists: " + normalizedEmail);
         }
