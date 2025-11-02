@@ -45,6 +45,12 @@ public class OrderDTO {
         }
     }
 
+    public OrderDTO(Long id, OrderStatus orderStatus, Instant moment) {
+        this.id = id;
+        this.status = orderStatus;
+        this.moment = moment;
+    }
+
     public Double getTotal() {
         return items
                 .stream()
