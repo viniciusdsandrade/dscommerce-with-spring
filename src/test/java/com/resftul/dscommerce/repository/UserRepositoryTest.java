@@ -26,7 +26,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = ANY)
 @ActiveProfiles("h2")
-class UserRepositoryTests {
+class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;

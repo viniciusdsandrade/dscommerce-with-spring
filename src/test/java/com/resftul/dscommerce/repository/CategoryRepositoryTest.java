@@ -26,7 +26,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = ANY)
 @ActiveProfiles("h2")
-class CategoryRepositoryTests {
+class CategoryRepositoryTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
