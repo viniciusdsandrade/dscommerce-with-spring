@@ -73,6 +73,22 @@ public class User implements UserDetails {
         this.password = encodedPassword;
     }
 
+    public User(
+            String name,
+            String email,
+            String phone,
+            LocalDate birthDate,
+            String rawPassword,
+            Role[] roles
+    ) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.password = rawPassword;
+        this.roles = new HashSet<>(Arrays.asList(roles));
+    }
+
     public void addRole(Role role) {
         this.roles.add(role);
     }
