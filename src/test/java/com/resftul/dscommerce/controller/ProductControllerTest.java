@@ -55,13 +55,13 @@ class ProductControllerTest {
     @Test
     @DisplayName("GET /products/{id} -> 200 e corpo com id e name")
     void findById_ok() throws Exception {
-        ProductDTO dto = new ProductDTO(
+        ProductDTO productDTO = new ProductDTO(
                 1L, "Notebook", "desc",
                 new BigDecimal("5499.90"),
                 "https://img.example/notebook.jpg",
                 List.of(new CategoryDTO(1L, "Informática"))
         );
-        when(productService.findById(1L)).thenReturn(dto);
+        when(productService.findById(1L)).thenReturn(productDTO);
 
         mockMvc.perform(get("/products/{id}", 1L))
                 .andExpect(status().isOk())
@@ -86,13 +86,13 @@ class ProductControllerTest {
     @Test
     @DisplayName("GET /products?name=pc -> 200 com conteúdo e metadados em $.page")
     void findAll_withContent() throws Exception {
-        var p1 = new ProductMinDTO(new com.resftul.dscommerce.entity.Product(
+        var product1 = new ProductMinDTO(new com.resftul.dscommerce.entity.Product(
                 10L, "PC Gamer", "d", new BigDecimal("3500.00"), "https://img/pc1.jpg"
         ));
-        var p2 = new ProductMinDTO(new com.resftul.dscommerce.entity.Product(
+        var product2 = new ProductMinDTO(new com.resftul.dscommerce.entity.Product(
                 11L, "PC Office", "d", new BigDecimal("2500.00"), "https://img/pc2.jpg"
         ));
-        Page<ProductMinDTO> page = new PageImpl<>(List.of(p1, p2), PageRequest.of(0, 2), 2);
+        Page<ProductMinDTO> page = new PageImpl<>(List.of(product1, product2), PageRequest.of(0, 2), 2);
 
         when(productService.findAll(eq("pc"), any())).thenReturn(page);
 
@@ -112,13 +112,13 @@ class ProductControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("POST /products -> 201 Created, Location e corpo com id e name (payload válido)")
     void insert_created() throws Exception {
-        ProductDTO out = new ProductDTO(
+        ProductDTO productDTO = new ProductDTO(
                 100L, "Notebook Pro", "Ultra leve",
                 new BigDecimal("8999.90"),
                 "https://img.example/note-pro.jpg",
                 List.of(new CategoryDTO(1L, "Informática"))
         );
-        when(productService.insert(any(ProductDTO.class))).thenReturn(out);
+        when(productService.insert(any(ProductDTO.class))).thenReturn(productDTO);
 
         String requestJson = """
         {
@@ -163,13 +163,13 @@ class ProductControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("PUT /products/{id} -> 200 e corpo atualizado")
     void update_ok() throws Exception {
-        ProductDTO out = new ProductDTO(
+        ProductDTO productDTO = new ProductDTO(
                 5L, "Mouse Gamer", "RGB",
                 new BigDecimal("199.90"),
                 "https://img.example/mouse.jpg",
                 List.of(new CategoryDTO(2L, "Acessórios"))
         );
-        when(productService.update(eq(5L), any(ProductDTO.class))).thenReturn(out);
+        when(productService.update(eq(5L), any(ProductDTO.class))).thenReturn(productDTO);
 
         String requestJson = """
         {
