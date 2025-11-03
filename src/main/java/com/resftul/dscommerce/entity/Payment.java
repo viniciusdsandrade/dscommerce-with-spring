@@ -12,7 +12,6 @@ import java.util.Objects;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

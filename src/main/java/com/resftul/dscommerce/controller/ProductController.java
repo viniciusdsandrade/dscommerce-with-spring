@@ -29,8 +29,8 @@ public class ProductController {
     @PermitAll
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
-        ProductDTO dto = productService.findById(id);
-        return ok(dto);
+        ProductDTO productDTO = productService.findById(id);
+        return ok(productDTO);
     }
 
     @PermitAll
@@ -39,8 +39,8 @@ public class ProductController {
             @RequestParam(name = "name", defaultValue = "") String name,
             Pageable pageable
     ) {
-        Page<ProductMinDTO> dto = productService.findAll(name, pageable);
-        return ok(dto);
+        Page<ProductMinDTO> productMinDTOPage = productService.findAll(name, pageable);
+        return ok(productMinDTOPage);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -11,10 +11,7 @@ public class RoleTest {
     @Test
     @DisplayName("getters/setters: preenchem e retornam id/authority")
     void getters_and_setters() {
-        Role role = new Role(
-                10L,
-                "ROLE_ADMIN"
-        );
+        Role role = new Role(10L, "ROLE_ADMIN");
 
         assertThat(role.getId()).isEqualTo(10L);
         assertThat(role.getAuthority()).isEqualTo("ROLE_ADMIN");
@@ -23,8 +20,7 @@ public class RoleTest {
     @Test
     @DisplayName("GrantedAuthority: getAuthority() expõe a string da role")
     void granted_authority_getAuthority() {
-        Role role = new Role();
-        role.setAuthority("ROLE_CLIENT");
+        Role role = new Role("ROLE_CLIENT");
 
         assertThat(role).isInstanceOf(org.springframework.security.core.GrantedAuthority.class);
         assertThat(role.getAuthority()).isEqualTo("ROLE_CLIENT");
@@ -57,8 +53,7 @@ public class RoleTest {
     @Test
     @DisplayName("equals: com id nulo nunca é igual a um com id não nulo")
     void equals_null_id_behavior() {
-        Role withNullId = new Role();
-        withNullId.setAuthority("ROLE_X");
+        Role withNullId = new Role("ROLE_X");
 
         Role withId = new Role(99L, "ROLE_X");
         assertThat(withNullId).isNotEqualTo(withId);
