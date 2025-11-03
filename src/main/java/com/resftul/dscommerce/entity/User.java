@@ -1,7 +1,6 @@
 package com.resftul.dscommerce.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +16,6 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.NONE;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -54,6 +52,11 @@ public class User implements UserDetails {
     @BatchSize(size = 50)
     private Set<Role> roles = new HashSet<>();
 
+    public User(String email, String encodedPassword) {
+        this.email = email;
+        this.password = encodedPassword;
+    }
+
     public User(
             String name,
             String email,
@@ -66,27 +69,6 @@ public class User implements UserDetails {
         this.phone = phone;
         this.birthDate = birthDate;
         this.password = encodedPassword;
-    }
-
-    public User(String email, String encodedPassword) {
-        this.email = email;
-        this.password = encodedPassword;
-    }
-
-    public User(
-            String name,
-            String email,
-            String phone,
-            LocalDate birthDate,
-            String rawPassword,
-            Role[] roles
-    ) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.birthDate = birthDate;
-        this.password = rawPassword;
-        this.roles = new HashSet<>(Arrays.asList(roles));
     }
 
     public User(
@@ -109,6 +91,22 @@ public class User implements UserDetails {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.roles = new HashSet<>(Arrays.asList(roles));
+    }
+
+    public User(
+            String name,
+            String email,
+            String phone,
+            LocalDate birthDate,
+            String rawPassword,
+            Role[] roles
+    ) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.password = rawPassword;
         this.roles = new HashSet<>(Arrays.asList(roles));
     }
 
