@@ -138,9 +138,9 @@ class CategoryRepositoryTest {
     @Test
     @DisplayName("save: viola uk_category_name ao tentar inserir nome duplicado")
     void save_throwsDataIntegrityViolation_onDuplicateName() {
-        categoryRepository.saveAndFlush(new Category(null, "Informática", null)); // id, name, products(null)
+        categoryRepository.saveAndFlush(new Category("Informática")); // id, name, products(null)
         assertThrows(DataIntegrityViolationException.class, () -> {
-            categoryRepository.saveAndFlush(new Category(null, "Informática", null));
+            categoryRepository.saveAndFlush(new Category("Informática"));
         });
     }
 }

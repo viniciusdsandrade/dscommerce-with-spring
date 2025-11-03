@@ -11,7 +11,6 @@ import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.NONE;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

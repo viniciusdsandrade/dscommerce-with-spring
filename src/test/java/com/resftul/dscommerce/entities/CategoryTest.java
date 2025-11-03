@@ -21,9 +21,7 @@ public class CategoryTest {
     }
 
     private static Category newCategory(String name) {
-        return new Category(
-                name
-        );
+        return new Category(name);
     }
 
     @Test
@@ -65,10 +63,10 @@ public class CategoryTest {
     @DisplayName("@ManyToMany(mappedBy=\"categories\"): presente e com fetch LAZY por default")
     void mapping_annotations_present_and_lazyByDefault() throws Exception {
         var field = Category.class.getDeclaredField("products");
-        var mm = field.getAnnotation(ManyToMany.class);
+        var manyToMany = field.getAnnotation(ManyToMany.class);
 
-        assertThat(mm).as("@ManyToMany deve estar presente").isNotNull();
-        assertThat(mm.mappedBy()).isEqualTo("categories");
-        assertThat(mm.fetch()).isEqualTo(LAZY);
+        assertThat(manyToMany).as("@ManyToMany deve estar presente").isNotNull();
+        assertThat(manyToMany.mappedBy()).isEqualTo("categories");
+        assertThat(manyToMany.fetch()).isEqualTo(LAZY);
     }
 }
