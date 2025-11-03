@@ -1,6 +1,7 @@
 package com.resftul.dscommerce.handler;
 
 import com.resftul.dscommerce.exception.ProductAlreadyExistsException;
+import com.resftul.dscommerce.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
@@ -26,12 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     @Schema(description = "Manipula a exceção BadRequestException, lançada quando uma requisição malformada é recebida.")
     public ResponseEntity<List<ErrorDetails>> handleBadRequestException(
-            BadRequestException exception,
+            BadRequestException badRequestException,
             WebRequest webRequest
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
-                exception.getMessage(),
+                badRequestException.getMessage(),
                 webRequest.getDescription(false),
                 "BAD_REQUEST"
         );
@@ -42,16 +43,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @Schema(description = "Manipula a exceção MethodArgumentNotValidException, lançada em caso de erros de validação.")
     public ResponseEntity<List<ValidationErrorDetails>> handleValidationException(
-            MethodArgumentNotValidException exception,
-            WebRequest request
+            MethodArgumentNotValidException methodArgumentNotValidException,
+            WebRequest webRequest
     ) {
         List<ValidationErrorDetails> errors = new ArrayList<>();
-        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
+        for (FieldError fieldError : methodArgumentNotValidException.getBindingResult().getFieldErrors()) {
             errors.add(
                     new ValidationErrorDetails(
                             now(),
                             fieldError.getDefaultMessage(),
-                            request.getDescription(false),
+                            webRequest.getDescription(false),
                             "METHOD_ARGUMENT_NOT_VALID_ERROR",
                             fieldError.getField()
                     )
@@ -63,12 +64,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @Schema(description = "Manipula a exceção IllegalArgumentException, lançada quando um argumento inválido é passado.")
     public ResponseEntity<List<ErrorDetails>> handleIllegalArgumentException(
-            IllegalArgumentException exception,
+            IllegalArgumentException illegalArgumentException,
             WebRequest webRequest
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
-                exception.getMessage(),
+                illegalArgumentException.getMessage(),
                 webRequest.getDescription(false),
                 "INVALID_ARGUMENT"
         );
@@ -79,12 +80,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     @Schema(description = "Manipula a exceção EntityNotFoundException, lançada quando uma entidade não é encontrada.")
     public ResponseEntity<List<ErrorDetails>> handleEntityNotFoundException(
-            EntityNotFoundException exception,
+            EntityNotFoundException entityNotFoundException,
             WebRequest webRequest
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
-                exception.getMessage(),
+                entityNotFoundException.getMessage(),
+                webRequest.getDescription(false),
+                "RESOURCE_NOT_FOUND"
+        );
+
+        return new ResponseEntity<>(List.of(errorDetails), NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @Schema(description = "Manipula a exceção ResourceNotFoundException, lançada quando um recurso não é encontrado.")
+    public ResponseEntity<List<ErrorDetails>> handleResourceNotFoundException(
+            ResourceNotFoundException resourceNotFoundException,
+            WebRequest webRequest
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                now(),
+                resourceNotFoundException.getMessage(),
                 webRequest.getDescription(false),
                 "RESOURCE_NOT_FOUND"
         );
@@ -95,12 +112,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @Schema(description = "Manipula exceções que indicam que o tipo de mídia da requisição não é suportado.")
     public ResponseEntity<List<ErrorDetails>> handleUnsupportedMediaTypeException(
-            HttpMediaTypeNotSupportedException exception,
+            HttpMediaTypeNotSupportedException httpMediaTypeNotSupportedException,
             WebRequest webRequest
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
-                exception.getMessage(),
+                httpMediaTypeNotSupportedException.getMessage(),
                 webRequest.getDescription(false),
                 "UNSUPPORTED_MEDIA_TYPE"
         );
@@ -127,12 +144,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductAlreadyExistsException.class)
     @Schema(description = "Manipula violação de unicidade para produto já existente.")
     public ResponseEntity<List<ErrorDetails>> handleProductAlreadyExistsException(
-            ProductAlreadyExistsException exception,
+            ProductAlreadyExistsException productAlreadyExistsException,
             WebRequest webRequest
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 now(),
-                exception.getMessage(),
+                productAlreadyExistsException.getMessage(),
                 webRequest.getDescription(false),
                 "CONFLICT"
         );
