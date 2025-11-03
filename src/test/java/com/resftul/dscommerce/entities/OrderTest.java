@@ -102,26 +102,26 @@ public class OrderTest {
     @Test
     @DisplayName("equals/hashCode baseados em id")
     void equals_and_hashCode_by_id() {
-        Order a = new Order();
-        a.setId(10L);
+        Order order1 = new Order();
+        order1.setId(10L);
 
-        Order b = new Order();
-        b.setId(10L);
+        Order order2 = new Order();
+        order2.setId(10L);
 
-        Order c = new Order();
-        c.setId(99L);
+        Order order3 = new Order();
+        order3.setId(99L);
 
-        assertThat(a).isEqualTo(b).hasSameHashCodeAs(b);
-        assertThat(a).isNotEqualTo(c);
+        assertThat(order1).isEqualTo(order2).hasSameHashCodeAs(order2);
+        assertThat(order1).isNotEqualTo(order3);
     }
 
     @Test
     @DisplayName("Campos simples possuem tipos esperados")
     void simple_fields_types() throws Exception {
         Field moment = Order.class.getDeclaredField("moment");
-        Field status = Order.class.getDeclaredField("status");
+        Field orderStatus = Order.class.getDeclaredField("orderStatus");
 
         assertThat(moment.getType()).isEqualTo(Instant.class);
-        assertThat(status.getType().getSimpleName()).isEqualTo("OrderStatus");
+        assertThat(orderStatus.getType().getSimpleName()).isEqualTo("OrderStatus");
     }
 }

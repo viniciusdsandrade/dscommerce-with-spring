@@ -16,7 +16,6 @@ import java.util.Set;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
