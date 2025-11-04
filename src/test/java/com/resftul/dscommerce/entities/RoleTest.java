@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RoleTest {
+class RoleTest {
 
     @Test
     @DisplayName("getters/setters: preenchem e retornam id/authority")

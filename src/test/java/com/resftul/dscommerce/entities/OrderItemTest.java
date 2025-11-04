@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderItemTest {
+class OrderItemTest {
 
     @Test
     @DisplayName("@Entity(name) e @Table(name)")

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserTest {
+class UserTest {
     private static void setPrivateId(Object target, Long id) {
         try {
             Field field = target.getClass().getDeclaredField("id");

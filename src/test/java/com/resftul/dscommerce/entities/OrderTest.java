@@ -17,7 +17,7 @@ import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderTest {
+class OrderTest {
 
     @Test
     @DisplayName("@Entity(name) e @Table(name)")

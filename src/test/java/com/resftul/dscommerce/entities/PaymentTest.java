@@ -9,7 +9,7 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PaymentTest {
+class PaymentTest {
 
     @Test
     @DisplayName("getters/setters: id, moment e order")

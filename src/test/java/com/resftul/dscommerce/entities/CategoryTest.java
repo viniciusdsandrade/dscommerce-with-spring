@@ -13,7 +13,7 @@ import java.util.Set;
 import static jakarta.persistence.FetchType.LAZY;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CategoryTest {
+class CategoryTest {
 
     private static <T> T withId(T entity, Long id) {
         ReflectionTestUtils.setField(entity, "id", id);
