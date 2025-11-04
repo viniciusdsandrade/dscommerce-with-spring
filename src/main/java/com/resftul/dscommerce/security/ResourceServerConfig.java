@@ -52,17 +52,15 @@ public class ResourceServerConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(OPTIONS, "/**").permitAll()
                 .requestMatchers(POST, "/users").permitAll()
-                .requestMatchers(GET,
-                        "/categories/**",
-                        "/products/**"
-                ).permitAll()
+                .requestMatchers(GET, "/users/me").authenticated()
+                .requestMatchers(GET, "/users").permitAll()
+                .requestMatchers(GET, "/users/*").permitAll()
+
+                .requestMatchers(GET, "/categories/**", "/products/**").permitAll()
                 .anyRequest().authenticated()
         );
 
-        http.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-        );
-
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
 

@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<UserDetailsProjection> results = userRepository.searchUserAndRolesByEmail(username);
         if (results.isEmpty()) throw new UsernameNotFoundException("Email not found: " + username);
@@ -61,11 +62,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable) {
         return userRepository.findAll(pageable).map(UserDTO::new);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -92,7 +95,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             );
 
             Role role = roleRepository.findByAuthority(ROLE_CLIENT_AUTHORITY)
-                    .orElseThrow(() -> new ResourceNotFoundException("Default role not found: " + ROLE_CLIENT_AUTHORITY));
+                    .orElseGet(() -> roleRepository.save(new Role(null, ROLE_CLIENT_AUTHORITY)));
             user.getRoles().clear();
             user.getRoles().add(role);
 

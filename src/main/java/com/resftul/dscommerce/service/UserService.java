@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {
 
+    @Transactional(readOnly = true)
     Page<UserDTO> findAllPaged(Pageable pageable);
 
+    @Transactional(readOnly = true)
     UserDTO findById(Long id);
 
     @Transactional
-    UserDTO insert(@Valid UserInsertDTO dto);
+    UserDTO insert(@Valid UserInsertDTO userInsertDTO);
 
     User authenticated();
 

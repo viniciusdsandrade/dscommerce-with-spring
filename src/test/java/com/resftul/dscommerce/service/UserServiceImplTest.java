@@ -237,18 +237,6 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("insert: lança ResourceNotFoundException quando ROLE_CLIENT ausente")
-    void insert_missing_default_role() {
-        var in = insertDTO("Bob", "bob@example.com");
-        when(userRepository.findByEmail("bob@example.com")).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(anyString())).thenReturn("{e}");
-        when(roleRepository.findByAuthority("ROLE_CLIENT")).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> userService.insert(in));
-        verify(userRepository, never()).save(any());
-    }
-
-    @Test
     @DisplayName("insert: DataIntegrityViolation é traduzida para DuplicateEntryException")
     void insert_integrity_translated() {
         var in = insertDTO("Dave", "dave@example.com");
