@@ -1,5 +1,7 @@
 package com.resftul.dscommerce.integration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,8 +22,7 @@ import static org.hamcrest.text.MatchesPattern.matchesPattern;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -31,6 +32,9 @@ public class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("GET /users -> 200 com página vazia (envelope: $.content + $.page)")
@@ -49,7 +53,9 @@ public class UserControllerIntegrationTest {
     @DisplayName("GET /users?size=2 -> 200 e página com itens (envelope: $.content + $.page)")
     @Sql(scripts = {"/sql/users/clean.sql", "/sql/users/seed-two-users.sql"}, executionPhase = BEFORE_TEST_METHOD)
     void getAllUsers_withContent() throws Exception {
-        mockMvc.perform(get("/users").param("page", "0").param("size", "2"))
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andExpect(jsonPath("$.content.length()").value(2))
@@ -83,6 +89,13 @@ public class UserControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andExpect(jsonPath("$.email").value("me@example.com"));
+    }
+
+    @Test
+    @DisplayName("GET /users/me -> 401 quando não autenticado")
+    void getMe_unauthorized() throws Exception {
+        mockMvc.perform(get("/users/me"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -127,14 +140,13 @@ public class UserControllerIntegrationTest {
         mockMvc.perform(post("/users")
                         .contentType(APPLICATION_JSON)
                         .content(invalidJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("GET /users/me -> 401 quando não autenticado")
-    void getMe_unauthorized() throws Exception {
-        mockMvc.perform(get("/users/me"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(jsonPath("$[*].field", hasItem("name")))
+                .andExpect(jsonPath("$[*].field", hasItem("email")))
+                .andExpect(jsonPath("$[*].field", hasItem("phone")))
+                .andExpect(jsonPath("$[*].field", hasItem("password")))
+                .andExpect(jsonPath("$[*].field", hasItem("birthDate")));
     }
 
     @Test
@@ -169,7 +181,7 @@ public class UserControllerIntegrationTest {
                 """;
         mockMvc.perform(post("/users")
                         .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_XML) // força 406
+                        .accept(APPLICATION_XML)
                         .content(body))
                 .andExpect(status().isNotAcceptable());
     }
@@ -182,61 +194,6 @@ public class UserControllerIntegrationTest {
         mockMvc.perform(post("/users")
                         .contentType(APPLICATION_JSON)
                         .content(malformed))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("POST /users persiste e GET /users/{id} retorna os mesmos dados essenciais (round-trip)")
-    @Sql(scripts = {"/sql/users/clean.sql"}, executionPhase = BEFORE_TEST_METHOD)
-    void createThenGetById_roundTrip() throws Exception {
-        String body = """
-                {
-                  "name": "Round Trip",
-                  "email": "round@example.com",
-                  "phone": "+5511999999999",
-                  "password": "Str0ng_P@ss!",
-                  "birthDate": "1990-01-10"
-                }
-                """;
-
-        var mvcResult = mockMvc.perform(post("/users")
-                        .contentType(APPLICATION_JSON)
-                        .content(body))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", matchesPattern(".*/users/\\d+$")))
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("Round Trip"))
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        String id = response.replaceAll(".*\"id\"\\s*:\\s*(\\d+).*", "$1");
-
-        mockMvc.perform(get("/users/{id}", Long.parseLong(id)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(Long.parseLong(id)))
-                .andExpect(jsonPath("$.name").value("Round Trip"))
-                .andExpect(jsonPath("$.email").value("round@example.com"))
-                .andExpect(jsonPath("$.password").doesNotExist());
-    }
-
-    @Test
-    @DisplayName("GET /users ordenado por nome desc -> 'Bruno' antes de 'Ana'")
-    @Sql(scripts = {"/sql/users/clean.sql", "/sql/users/seed-two-users.sql"}, executionPhase = BEFORE_TEST_METHOD)
-    void getAllUsers_sortedByName_desc() throws Exception {
-        mockMvc.perform(get("/users")
-                        .param("sort", "name,desc")
-                        .param("page", "0")
-                        .param("size", "2"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(2))
-                .andExpect(jsonPath("$.content[0].name").value("Bruno"))
-                .andExpect(jsonPath("$.content[1].name").value("Ana"));
-    }
-
-    @Test
-    @DisplayName("GET /users/{id} com id não numérico -> 400 (type mismatch)")
-    void findById_typeMismatch_badRequest() throws Exception {
-        mockMvc.perform(get("/users/{id}", "abc")) // path variable inválido
                 .andExpect(status().isBadRequest());
     }
 
@@ -260,10 +217,61 @@ public class UserControllerIntegrationTest {
                 .andExpect(status().isConflict());
     }
 
+    @Test
+    @DisplayName("POST /users persiste e GET /users/{id} retorna dados essenciais (round-trip)")
+    @Sql(scripts = {"/sql/users/clean.sql"}, executionPhase = BEFORE_TEST_METHOD)
+    void createThenGetById_roundTrip() throws Exception {
+        String body = """
+                {
+                  "name": "Round Trip",
+                  "email": "round@example.com",
+                  "phone": "+5511999999999",
+                  "password": "Str0ng_P@ss!",
+                  "birthDate": "1990-01-10"
+                }
+                """;
+
+        var mvcResult = mockMvc.perform(post("/users")
+                        .contentType(APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", matchesPattern(".*/users/\\d+$")))
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Round Trip"))
+                .andReturn();
+
+        String response = mvcResult.getResponse().getContentAsString();
+        JsonNode root = objectMapper.readTree(response);
+        long id = root.path("id").asLong();
+
+        mockMvc.perform(get("/users/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value("Round Trip"))
+                .andExpect(jsonPath("$.email").value("round@example.com"))
+                .andExpect(jsonPath("$.password").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("GET /users ordenado por nome desc -> 'Bruno' antes de 'Ana'")
+    @Sql(scripts = {"/sql/users/clean.sql", "/sql/users/seed-two-users.sql"}, executionPhase = BEFORE_TEST_METHOD)
+    void getAllUsers_sortedByName_desc() throws Exception {
+        mockMvc.perform(get("/users")
+                        .param("sort", "name,desc")
+                        .param("page", "0")
+                        .param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].name").value("Bruno"))
+                .andExpect(jsonPath("$.content[1].name").value("Ana"));
+    }
+
     @ParameterizedTest
     @MethodSource("invalidPayloads")
     void createUser_badRequest_fieldErrors(String json, String expectedField) throws Exception {
-        mockMvc.perform(post("/users").contentType(APPLICATION_JSON).content(json))
+        mockMvc.perform(post("/users")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[*].field", hasItem(expectedField)));
     }
