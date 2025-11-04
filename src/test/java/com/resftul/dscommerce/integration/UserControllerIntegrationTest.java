@@ -25,10 +25,29 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Casos cobertos — UserController (teste de integração end-to-end via MockMvc):
+ * - getAllUsers_empty: GET /users retorna 200 com página vazia (envelope content+page).
+ * - getAllUsers_withContent: GET /users?size=2 retorna 200 com 2 itens e paginação correta.
+ * - findById_ok: GET /users/{id} retorna 200 com id/name/email do usuário sem vazamentos.
+ * - getMe_ok_authenticated: GET /users/me retorna 200 quando autenticado (Security ativa).
+ * - getMe_unauthorized: GET /users/me retorna 401 sem autenticação.
+ * - createUser_created: POST /users retorna 201, Location /users/{id} e JSON com id/name/email.
+ * - createUser_badRequest_validation: POST /users retorna 400 com erros de validação por campo.
+ * - findById_notFound: GET /users/{id} inexistente retorna 404 com errorCode RESOURCE_NOT_FOUND.
+ * - createUser_unsupportedMediaType: POST /users com Content-Type inválido retorna 415.
+ * - createUser_notAcceptable_whenXmlRequested: POST /users com Accept não suportado retorna 406.
+ * - createUser_badRequest_malformedJson: POST /users com JSON malformado retorna 400.
+ * - createUser_conflict_duplicateEmail: POST /users com email já existente retorna 409.
+ * - createThenGetById_roundTrip: POST seguido de GET /users/{id} confirma persistência e não expõe password.
+ * - getAllUsers_sortedByName_desc: GET /users ordenado por name,desc retorna Bruno antes de Ana.
+ * - createUser_badRequest_fieldErrors: POST /users parametrizado garante que cada campo inválido aparece no array de erros.
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-public class UserControllerIntegrationTest {
+class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
