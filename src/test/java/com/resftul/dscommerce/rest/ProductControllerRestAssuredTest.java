@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.restassured;
+package com.resftul.dscommerce.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -37,6 +37,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static java.lang.System.nanoTime;
 import static java.time.temporal.ChronoUnit.HOURS;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -54,6 +55,11 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+
+import org.springframework.security.oauth2.jwt.BadJwtException;
+
+import java.text.ParseException;
+import java.util.*;
 
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -88,16 +94,35 @@ class ProductControllerRestAssuredTest {
     void stubJwtDecoderToUseTokenClaims() {
         when(jwtDecoder.decode(anyString())).thenAnswer(invocation -> {
             final String token = invocation.getArgument(0, String.class);
-            final SignedJWT parsed = SignedJWT.parse(token);
-            final JWTClaimsSet set = parsed.getJWTClaimsSet();
+
+            long dotCount = token == null
+                    ? 0L
+                    : token.chars().filter(ch -> ch == '.').count();
+
+            if (dotCount != 2) throw new BadJwtException("Invalid token format");
+
+            final SignedJWT parsed;
+
+            try {
+                parsed = SignedJWT.parse(token);
+            } catch (ParseException parseException) {
+                throw new BadJwtException("Invalid token", parseException);
+            }
+
+            final JWTClaimsSet set;
+            try {
+                set = parsed.getJWTClaimsSet();
+            } catch (ParseException parseException) {
+                throw new BadJwtException("Invalid token claims", parseException);
+            }
 
             final Map<String, Object> claims = new HashMap<>(set.getClaims());
 
             @SuppressWarnings("unchecked")
-            List<String> raw = Optional.ofNullable((List<String>) claims.get("authorities"))
+            List<String> raw = ofNullable((List<String>) claims.get("authorities"))
                     .orElseGet(() -> {
                         try {
-                            return Optional.ofNullable(set.getStringListClaim("roles")).orElse(List.of());
+                            return ofNullable(set.getStringListClaim("roles")).orElse(List.of());
                         } catch (Exception e) {
                             return List.of();
                         }
@@ -107,11 +132,11 @@ class ProductControllerRestAssuredTest {
                     .toList();
             claims.put("authorities", normalized);
 
-            final Instant issuedAt = Optional.ofNullable(set.getIssueTime())
+            final Instant issuedAt = ofNullable(set.getIssueTime())
                     .map(Date::toInstant)
                     .orElseGet(Instant::now);
 
-            final Instant expiresAt = Optional.ofNullable(set.getExpirationTime())
+            final Instant expiresAt = ofNullable(set.getExpirationTime())
                     .map(Date::toInstant)
                     .orElse(issuedAt.plus(Duration.ofHours(1)));
 
@@ -121,10 +146,12 @@ class ProductControllerRestAssuredTest {
 
             return Jwt.withTokenValue(token)
                     .headers(h -> {
-                        if (alg != null) h.put("alg", alg.getName());
+                        if (alg != null) {
+                            h.put("alg", alg.getName());
+                        }
                     })
                     .subject(set.getSubject())
-                    .issuer(Optional.ofNullable(set.getIssuer()).orElse(ISSUER))
+                    .issuer(ofNullable(set.getIssuer()).orElse(ISSUER))
                     .issuedAt(issuedAt)
                     .expiresAt(expiresAt)
                     .claims(c -> c.putAll(claims))
