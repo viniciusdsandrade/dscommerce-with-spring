@@ -1,4 +1,4 @@
-package com.resftul.dscommerce.restassured;
+package com.resftul.dscommerce.rest;
 
 
 import io.restassured.RestAssured;
