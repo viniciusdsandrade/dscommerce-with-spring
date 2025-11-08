@@ -52,7 +52,7 @@ public class ResourceServerConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(OPTIONS, "/**").permitAll()
                 .requestMatchers(POST, "/users").permitAll()
-                .requestMatchers("/error").permitAll()          // <- acrescentar
+                .requestMatchers("/error").permitAll()
                 .requestMatchers(GET, "/users/me").authenticated()
                 .requestMatchers(GET, "/users").permitAll()
                 .requestMatchers(GET, "/users/*").permitAll()

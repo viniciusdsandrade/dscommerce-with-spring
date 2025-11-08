@@ -82,20 +82,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(BAD_REQUEST).body(List.of(errorDetails));
     }
 
-    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
-    public ResponseEntity<List<ErrorDetails>> handleNotAcceptable(
-            HttpMediaTypeNotAcceptableException httpMediaTypeNotAcceptableException,
-            WebRequest webRequest
-    ) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                now(),
-                httpMediaTypeNotAcceptableException.getMessage(),
-                webRequest.getDescription(false),
-                "NOT_ACCEPTABLE"
-        );
-        return new ResponseEntity<>(List.of(errorDetails), NOT_ACCEPTABLE);
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     @Schema(description = "Manipula a exceção IllegalArgumentException, lançada quando um argumento inválido é passado.")
     public ResponseEntity<List<ErrorDetails>> handleIllegalArgumentException(
@@ -144,6 +130,35 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(List.of(errorDetails), NOT_FOUND);
     }
 
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<List<ErrorDetails>> handleNotAcceptable(
+            HttpMediaTypeNotAcceptableException httpMediaTypeNotAcceptableException,
+            WebRequest webRequest
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                now(),
+                httpMediaTypeNotAcceptableException.getMessage(),
+                webRequest.getDescription(false),
+                "NOT_ACCEPTABLE"
+        );
+        return new ResponseEntity<>(List.of(errorDetails), NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    @Schema(description = "Manipula violação de unicidade para produto já existente.")
+    public ResponseEntity<List<ErrorDetails>> handleProductAlreadyExistsException(
+            ProductAlreadyExistsException productAlreadyExistsException,
+            WebRequest webRequest
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                now(),
+                productAlreadyExistsException.getMessage(),
+                webRequest.getDescription(false),
+                "CONFLICT"
+        );
+        return new ResponseEntity<>(List.of(errorDetails), CONFLICT);
+    }
+
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @Schema(description = "Manipula exceções que indicam que o tipo de mídia da requisição não é suportado.")
     public ResponseEntity<List<ErrorDetails>> handleUnsupportedMediaTypeException(
@@ -174,20 +189,5 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(List.of(errorDetails), INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(ProductAlreadyExistsException.class)
-    @Schema(description = "Manipula violação de unicidade para produto já existente.")
-    public ResponseEntity<List<ErrorDetails>> handleProductAlreadyExistsException(
-            ProductAlreadyExistsException productAlreadyExistsException,
-            WebRequest webRequest
-    ) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                now(),
-                productAlreadyExistsException.getMessage(),
-                webRequest.getDescription(false),
-                "CONFLICT"
-        );
-        return new ResponseEntity<>(List.of(errorDetails), CONFLICT);
     }
 }

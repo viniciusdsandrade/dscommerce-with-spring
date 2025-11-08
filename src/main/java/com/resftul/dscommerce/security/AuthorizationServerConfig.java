@@ -85,7 +85,11 @@ public class AuthorizationServerConfig {
                         .tokenEndpoint(token -> token
                                 .accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
                                 .authenticationProvider(new CustomPasswordAuthenticationProvider(
-                                        authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder))
+                                        authorizationService(),
+                                        tokenGenerator(),
+                                        userDetailsService,
+                                        passwordEncoder)
+                                )
                         )
                         .oidc(Customizer.withDefaults())
                 );
@@ -173,14 +177,17 @@ public class AuthorizationServerConfig {
     JWKSource<SecurityContext> jwkSource() {
         RSAKey rsaKey = generateRsa();
         JWKSet jwkSet = new JWKSet(rsaKey);
-        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+        return (jwkSelector, _) -> jwkSelector.select(jwkSet);
     }
 
     private static RSAKey generateRsa() {
         KeyPair keyPair = generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        return new RSAKey.Builder(publicKey).privateKey(privateKey).keyID(UUID.randomUUID().toString()).build();
+        return new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .keyID(UUID.randomUUID().toString())
+                .build();
     }
 
     private static KeyPair generateRsaKey() {
