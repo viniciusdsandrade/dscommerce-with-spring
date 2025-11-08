@@ -7,12 +7,14 @@ import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,39 @@ public class GlobalExceptionHandler {
             );
         }
         return ResponseEntity.status(BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @Schema(description = "Manipula erros de conversão de parâmetros de método, por exemplo, path variables com tipo inválido.")
+    public ResponseEntity<List<ErrorDetails>> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException methodArgumentTypeMismatchException,
+            WebRequest webRequest
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                now(),
+                "Invalid value for parameter '%s': '%s'".formatted(
+                        methodArgumentTypeMismatchException.getName(),
+                        String.valueOf(methodArgumentTypeMismatchException.getValue())
+                ),
+                webRequest.getDescription(false),
+                "METHOD_ARGUMENT_TYPE_MISMATCH"
+        );
+
+        return ResponseEntity.status(BAD_REQUEST).body(List.of(errorDetails));
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<List<ErrorDetails>> handleNotAcceptable(
+            HttpMediaTypeNotAcceptableException httpMediaTypeNotAcceptableException,
+            WebRequest webRequest
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                now(),
+                httpMediaTypeNotAcceptableException.getMessage(),
+                webRequest.getDescription(false),
+                "NOT_ACCEPTABLE"
+        );
+        return new ResponseEntity<>(List.of(errorDetails), NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
