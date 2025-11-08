@@ -10,24 +10,28 @@ import com.resftul.dscommerce.projections.UserDetailsProjection;
 import com.resftul.dscommerce.repository.RoleRepository;
 import com.resftul.dscommerce.repository.UserRepository;
 import com.resftul.dscommerce.service.impl.UserServiceImpl;
-import org.junit.jupiter.api.*;
+import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import jakarta.validation.ValidationException;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -86,10 +90,9 @@ class UserServiceImplTest {
     }
 
     private static void setAuthName(String email) {
-        Authentication auth = mock(Authentication.class);
-        when(auth.isAuthenticated()).thenReturn(true);
-        when(auth.getName()).thenReturn(email);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(email, "pwd", List.of())
+        );
     }
 
     private static JwtAuthenticationToken jwtWithUsernameClaim(String email, String... roles) {
@@ -104,6 +107,16 @@ class UserServiceImplTest {
         return new JwtAuthenticationToken(jwt, auths);
     }
 
+    private static JwtAuthenticationToken jwtWithoutUsernameButSubject(String... roles) {
+        Jwt jwt = Jwt.withTokenValue("tok2")
+                .header("alg", "none")
+                .subject("subject@example.com")
+                .build();
+        List<GrantedAuthority> auths = Arrays.stream(roles)
+                .map(SimpleGrantedAuthority::new)
+                .collect(toList());
+        return new JwtAuthenticationToken(jwt, auths);
+    }
 
     private static void setAuth(Authentication a) {
         SecurityContextHolder.getContext().setAuthentication(a);
@@ -120,24 +133,13 @@ class UserServiceImplTest {
     private record Row(String username, String password, Long roleId, String authority)
             implements UserDetailsProjection {
         @Override
-        public String getUsername() {
-            return username;
-        }
-
+        public String getUsername() { return username; }
         @Override
-        public String getPassword() {
-            return password;
-        }
-
+        public String getPassword() { return password; }
         @Override
-        public Long getRoleId() {
-            return roleId;
-        }
-
+        public Long getRoleId() { return roleId; }
         @Override
-        public String getAuthority() {
-            return authority;
-        }
+        public String getAuthority() { return authority; }
     }
 
     @Test
@@ -178,6 +180,21 @@ class UserServiceImplTest {
         assertThat(out.getContent().get(0).getId()).isEqualTo(10L);
         assertThat(out.getContent().get(1).getEmail()).isEqualTo("bruno@example.com");
         verify(userRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("findAllPaged: repassa corretamente o Pageable (page,size,sort)")
+    void findAllPaged_capturesPageable() {
+        when(userRepository.findAll(any(Pageable.class))).thenReturn(pageOfUsers());
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+
+        userService.findAllPaged(PageRequest.of(2, 50, Sort.by(Sort.Order.asc("name"))));
+
+        verify(userRepository).findAll(captor.capture());
+        Pageable p = captor.getValue();
+        assertThat(p.getPageNumber()).isEqualTo(2);
+        assertThat(p.getPageSize()).isEqualTo(50);
+        assertThat(Objects.requireNonNull(p.getSort().getOrderFor("name")).isAscending()).isTrue();
     }
 
     @Test
@@ -227,13 +244,41 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("insert: lança DuplicateEntryException quando email já existe (pré-check)")
+    @DisplayName("insert: quando ROLE_CLIENT não existe, cria e associa (fallback orElseGet(save))")
+    void insert_roleFallback_createsAndAssignsRole() {
+        var in = insertDTO("Eve", "eve@example.com");
+        when(userRepository.findByEmail("eve@example.com")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode("Aa1!aaaa")).thenReturn("{bcrypt}hash");
+        when(roleRepository.findByAuthority("ROLE_CLIENT")).thenReturn(Optional.empty());
+        Role persisted = new Role(99L, "ROLE_CLIENT");
+        when(roleRepository.save(any(Role.class))).thenReturn(persisted);
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> {
+            User u = inv.getArgument(0);
+            u.setId(101L);
+            return u;
+        });
+
+        UserDTO out = userService.insert(in);
+
+        assertThat(out.getId()).isEqualTo(101L);
+        assertThat(out.getEmail()).isEqualTo("eve@example.com");
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(userCaptor.capture());
+        assertThat(userCaptor.getValue().getRoles()).extracting("authority").containsExactly("ROLE_CLIENT");
+        verify(roleRepository).save(any(Role.class));
+    }
+
+    @Test
+    @DisplayName("insert: lança DuplicateEntryException quando email já existe (pré-check) e não toca encoder/role/save")
     void insert_duplicate_precheck() {
         var in = insertDTO("Ana", "ana@example.com");
         when(userRepository.findByEmail("ana@example.com")).thenReturn(Optional.of(user(1L, "x", "ana@example.com")));
 
         assertThrows(DuplicateEntryException.class, () -> userService.insert(in));
+
         verify(userRepository, never()).save(any());
+        verify(passwordEncoder, never()).encode(any());
+        verify(roleRepository, never()).findByAuthority(any());
     }
 
     @Test
@@ -249,7 +294,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("insert: email nulo -> ValidationException (normalização)")
+    @DisplayName("insert: email nulo -> ValidationException (normalização) e não persiste nada")
     void insert_null_email_validation() {
         var in = new UserInsertDTO(
                 "X",
@@ -259,6 +304,8 @@ class UserServiceImplTest {
                 LocalDate.of(2000, 1, 1)
         );
         assertThrows(ValidationException.class, () -> userService.insert(in));
+        verify(userRepository, never()).save(any());
+        verifyNoInteractions(passwordEncoder, roleRepository);
     }
 
     @Test
@@ -287,10 +334,32 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("authenticated: fallback para getName() quando JWT não possui claim 'username'")
+    void authenticated_jwtWithoutUsername_fallsBackToName() {
+        setAuth(jwtWithoutUsernameButSubject("ROLE_CLIENT"));
+        when(userRepository.findByEmail("subject@example.com"))
+                .thenReturn(Optional.of(user(25L, "Subj", "subject@example.com")));
+
+        User me = userService.authenticated();
+
+        assertThat(me.getEmail()).isEqualTo("subject@example.com");
+        verify(userRepository).findByEmail("subject@example.com");
+    }
+
+    @Test
     @DisplayName("authenticated: sem Authentication ou não autenticado -> AuthenticationCredentialsNotFoundException")
     void authenticated_noAuth_throws() {
         SecurityContextHolder.clearContext();
         assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userService.authenticated());
+    }
+
+    @Test
+    @DisplayName("authenticated: 404 quando usuário não existe")
+    void authenticated_userNotFound_throws() {
+        setAuthName("john@example.com");
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.authenticated());
     }
 
     @Test
@@ -325,5 +394,12 @@ class UserServiceImplTest {
         when(userRepository.findByEmail("ghost@example.com")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.getMe());
+    }
+
+    @Test
+    @DisplayName("getMe: sem Authentication -> AuthenticationCredentialsNotFoundException")
+    void getMe_noAuth_throwsCredentialsNotFound() {
+        SecurityContextHolder.clearContext();
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userService.getMe());
     }
 }
