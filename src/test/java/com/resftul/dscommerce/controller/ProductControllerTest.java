@@ -3,6 +3,8 @@ package com.resftul.dscommerce.controller;
 import com.resftul.dscommerce.dto.CategoryDTO;
 import com.resftul.dscommerce.dto.product.ProductDTO;
 import com.resftul.dscommerce.dto.product.ProductMinDTO;
+import com.resftul.dscommerce.exception.ProductAlreadyExistsException;
+import com.resftul.dscommerce.exception.ResourceNotFoundException;
 import com.resftul.dscommerce.service.ProductService;
 import com.resftul.dscommerce.util.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +43,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -114,10 +115,12 @@ class ProductControllerTest {
     @DisplayName("GET /products/{id} -> 404 quando não encontrado")
     void findById_notFound() throws Exception {
         when(productService.findById(999L))
-                .thenThrow(new ResponseStatusException(NOT_FOUND, "Product 999"));
+                .thenThrow(new ResourceNotFoundException("Product 999"));
 
         mockMvc.perform(get("/products/{id}", 999L))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].message").value("Product 999"));
     }
 
     @Test
@@ -225,10 +228,10 @@ class ProductControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("POST /products -> 409 quando nome já existe (ResponseStatusException CONFLICT)")
+    @DisplayName("POST /products -> 409 quando nome já existe (exceção de domínio ProductAlreadyExistsException)")
     void insert_conflict_onDuplicateName() throws Exception {
         when(productService.insert(any(ProductDTO.class)))
-                .thenThrow(new ResponseStatusException(CONFLICT, "name already exists"));
+                .thenThrow(new ProductAlreadyExistsException("name already exists"));
 
         String requestJson = """
         {
@@ -244,7 +247,9 @@ class ProductControllerTest {
                         .with(csrf())
                         .contentType(APPLICATION_JSON)
                         .content(requestJson))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].message").value("name already exists"));
     }
 
     @Test
@@ -264,7 +269,9 @@ class ProductControllerTest {
                         .with(csrf())
                         .contentType(APPLICATION_JSON)
                         .content(invalidJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].errorCode").value("METHOD_ARGUMENT_NOT_VALID_ERROR"));
 
         verify(productService, never()).insert(any(ProductDTO.class));
     }
@@ -383,12 +390,14 @@ class ProductControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("DELETE /products/{id} -> 404 quando não encontrado")
     void delete_notFound() throws Exception {
-        doThrow(new ResponseStatusException(NOT_FOUND, "Product 888"))
+        doThrow(new ResourceNotFoundException("Product 888"))
                 .when(productService).delete(888L);
 
         mockMvc.perform(delete("/products/{id}", 888L)
                         .with(csrf()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].message").value("Product 888"));
     }
 
     @Test
@@ -409,6 +418,8 @@ class ProductControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isForbidden());
+
+        verify(productService, never()).insert(any(ProductDTO.class));
     }
 
     @Test
@@ -430,5 +441,7 @@ class ProductControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isForbidden());
+
+        verify(productService, never()).insert(any(ProductDTO.class));
     }
 }
