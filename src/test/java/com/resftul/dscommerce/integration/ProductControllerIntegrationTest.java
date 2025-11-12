@@ -206,7 +206,7 @@ class ProductControllerIntegrationTest {
               "name": "",
               "description": "x",
               "price": -10.00,
-              "imgUrl": "http://insecure.example.com/img.jpg",
+              "imgUrl": "https://insecure.example.com/img.jpg",
               "categories": []
             }
             """;

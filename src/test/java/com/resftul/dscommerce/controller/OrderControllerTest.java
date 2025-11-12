@@ -102,12 +102,12 @@ class OrderControllerTest {
     @DisplayName("GET /orders/{id} -> 404 quando não encontrado")
     void findById_notFound() throws Exception {
         when(orderService.findById(999L))
-                .thenThrow(new ResourceNotFoundException("Order 999")); // [INFERENCIA] mensagem exata
+                .thenThrow(new ResourceNotFoundException("Order 999"));
 
         mockMvc.perform(get("/orders/{id}", 999L))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].message").value("Order 999")); // [INFERENCIA] shape do erro
+                .andExpect(jsonPath("$[0].message").value("Order 999"));
     }
 
     @Test
@@ -197,7 +197,7 @@ class OrderControllerTest {
                         .content(invalidJson))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].errorCode").value("METHOD_ARGUMENT_NOT_VALID_ERROR")); // [INFERENCIA]
+                .andExpect(jsonPath("$[0].errorCode").value("METHOD_ARGUMENT_NOT_VALID_ERROR"));
 
         verify(orderService, never()).insert(any(OrderDTO.class));
     }
